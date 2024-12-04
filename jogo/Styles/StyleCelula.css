@@ -1,0 +1,112 @@
+.Celula {
+  position: relative;
+  height: 20px;
+  width: 20px;
+}
+.Celula > * {
+  position: absolute;
+  z-index: 1;
+}
+.Celula > .caminho {
+  z-index: 0;
+}
+.arvore {
+  background-image: url(Imagens/arvorenatal.png);
+  background-size: cover;
+  width: 20px;
+  height: 26px;
+}
+.arvore2 {
+  background-image: url(Imagens/arvorenormal.png);
+  background-size: cover;
+  width: 16px;
+  height: 30px;
+}
+.capim {
+  background-image: url(Imagens/capim.png);
+  background-size: cover;
+  z-index: 2;
+  width: 25px;
+  height: 30px;
+}
+.pedra {
+  border-radius: 20%;
+  background-image: url(Imagens/pedra.png);
+  background-size: cover;
+  width: 25px;
+  height: 25px;
+}
+.lama {
+  border-radius: 25%;
+  background-image: url(Imagens/lama.png);
+  background-size: cover;
+  z-index: 0;
+  width: 15px;
+  height: 15px;
+}
+.rio {
+  border-radius: 0% 0% 10% 0%;
+  background-image: url(Imagens/agua.png);
+  background-size: cover;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+}
+.castelo1 {
+  background-image: url(Imagens/castelo1.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  top: 4px;
+  width: 20px;
+  height: 24px;
+}
+.castelo2 {
+  background-image: url(Imagens/castelo2.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 24px;
+}
+.castelo3 {
+  background-image: url(Imagens/castelo3.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  top: 4px;
+  width: 20px;
+  height: 24px;
+}
+.castelo4 {
+  background-image: url(Imagens/castelo4.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 24px;
+}
+.ponte1 {
+  background-image: url(Imagens/ponte1.png);
+  background-size: cover;
+  width: 20px;
+  height: 20px;
+  z-index: 0;
+}
+.ponte3 {
+  background-image: url(Imagens/ponte2.png);
+  background-size: cover;
+  width: 20px;
+  height: 20px;
+  z-index: 0;
+}
+.ponte2 {
+  background-image: url(Imagens/ponte3.png);
+  background-size: cover;
+  z-index: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.placa {
+  background-image: url(Imagens/placa.png);
+  background-size: cover;
+  width: 20px;
+  height: 20px;
+}
