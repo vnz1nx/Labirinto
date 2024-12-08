@@ -1,0 +1,17 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.container {
+  width: max-content;
+  margin: auto;
+}
+
+.mostralinha {
+  display: flex;
+  flex-direction: row;
+  background-image: url(Imagens/grass.png);
+  width: max-content;
+}

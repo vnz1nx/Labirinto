@@ -1,0 +1,29 @@
+.Personagem {
+  background-image: url(Imagens/perso.gif);
+  background-size: cover;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+}
+
+.objetivo {
+  background-image: url(Imagens/objetivo.png);
+  background-size: cover;
+  z-index: 1;
+  width: 20px;
+  height: 30px;
+  filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(-55%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}

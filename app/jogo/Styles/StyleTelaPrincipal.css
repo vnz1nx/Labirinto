@@ -1,0 +1,113 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-image: url('Imagens/imagemCastelo.PNG');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  image-rendering: pixelated;
+  image-orientation: from-image;
+  image-resolution: 300dpi;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.conteiner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 320px;
+  height: 400px;
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.tituloJogo {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 15px;
+  line-height: normal;
+  text-shadow: none;
+  font-weight: normal;
+  font-family: 'Courier New', Courier, monospace;
+  animation: slideUp 1s ease-in-out;
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.linkjogo {
+  width: 100px;
+  height: 50px;
+  background-color: #3c7bad;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.linkjogo:hover {
+  background-color: #21b7dc;
+  transform: scale(1.10);
+}
+
+.personagem {
+  width: 100px;
+  height: 100px;
+  background-image: url('Imagens/perso.gif');
+  background-size: cover;
+  background-position: center;
+  align-items: center;
+  position: absolute;
+  top: 24%;
+  right: inherit;
+}
+
+@media (max-width: 768px) {
+  .conteiner {
+    width: 260px;
+    height: 350px;
+    padding: 20px;
+  }
+
+  .tituloJogo {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .linkjogo {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
