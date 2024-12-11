@@ -1,10 +1,10 @@
-import TelaPrincipal from "./jogo/TelaPrincipal";
+import RepGame from "./jogo/RepGame";
 
 
 export default function Home() {
   return (
     <>
-    <TelaPrincipal></TelaPrincipal>
+    <RepGame></RepGame>
     </>
   );
 }

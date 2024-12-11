@@ -10,8 +10,14 @@ export default function RepGame() {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  const [player, setPlayer] = useState([numeroAleatorio(11, 47), numeroAleatorio(3, 47)]);
-  const [Objetivo, setObjetivo] = useState([numeroAleatorio(19, 47), numeroAleatorio(3, 47)]);
+  const [player, setPlayer] = useState([
+    numeroAleatorio(11, 47),
+    numeroAleatorio(3, 47),
+  ]);
+  const [Objetivo, setObjetivo] = useState([
+    numeroAleatorio(19, 47),
+    numeroAleatorio(3, 47),
+  ]);
 
   const [obst, setObst] = useState([]);
   const [lamaCapim, setLamaCapim] = useState([]);
@@ -21,7 +27,7 @@ export default function RepGame() {
   const [personagemCastelo, setPersonagemCastelo] = useState(true);
 
   useEffect(() => {
-    const numObstaculos = 200;
+    const numObstaculos = 250;
     const obst = Array.from({ length: numObstaculos }, () => [
       numeroAleatorio(12, 47),
       numeroAleatorio(2, 47),
@@ -40,8 +46,12 @@ export default function RepGame() {
     const obstaculo = obst.find(
       (o) =>
         (e.key === "ArrowUp" && o[0] === player[0] - 1 && o[1] === player[1]) ||
-        (e.key === "ArrowDown" && o[0] === player[0] + 1 && o[1] === player[1]) ||
-        (e.key === "ArrowLeft" && o[0] === player[0] && o[1] === player[1] - 1) ||
+        (e.key === "ArrowDown" &&
+          o[0] === player[0] + 1 &&
+          o[1] === player[1]) ||
+        (e.key === "ArrowLeft" &&
+          o[0] === player[0] &&
+          o[1] === player[1] - 1) ||
         (e.key === "ArrowRight" && o[0] === player[0] && o[1] === player[1] + 1)
     );
 
@@ -57,43 +67,28 @@ export default function RepGame() {
           player[1] === 25 ||
           player[1] === 26),
     ];
-
-    if (Objetivo[0] === obst[0] && Objetivo[1] === obst[1]) {
-      setObjetivo([numeroAleatorio(11, 47), numeroAleatorio(3, 47)]);
-    }
-
-    if (!ObjetivoEncontrado) {
-      if (positionsArray.includes(personagemCastelo)) {
-        window.confirm("Ache o objetivo primeiro!Encontre a Excalibur!");
-        setPlayer([numeroAleatorio(11, 47), numeroAleatorio(3, 47)]);
-      }
-    } else if (
-      positionsArray.includes(false) &&
-      e.key === "ArrowUp" &&
-      !obstaculo
-    ) {
-      setPlayer([player[0] - 1, player[1]]);
-      setMover(mover + 1);
+    if (!ObjetivoEncontrado && positionsArray.includes(true)) {
+      window.confirm("Ache o objetivo primeiro! Encontre a Excalibur!");
+      setPlayer([numeroAleatorio(11, 47), numeroAleatorio(3, 47)]);
+      return;
     }
 
     if (!obstaculo) {
-      if (
-        e.key === "ArrowUp" &&
-        player[0] >= 2 &&
-        !positionsArray.includes(true)
-      ) {
+      if (e.key === "ArrowUp" && player[0] > 2) {
         setPlayer([player[0] - 1, player[1]]);
-        setMover(mover + 1);
       } else if (e.key === "ArrowDown" && player[0] < 47) {
         setPlayer([player[0] + 1, player[1]]);
-        setMover(mover + 1);
-      } else if (e.key === "ArrowLeft" && player[1] >= 3) {
+      } else if (e.key === "ArrowLeft" && player[1] > 2) {
         setPlayer([player[0], player[1] - 1]);
-        setMover(mover + 1);
       } else if (e.key === "ArrowRight" && player[1] < 47) {
         setPlayer([player[0], player[1] + 1]);
-        setMover(mover + 1);
       }
+      setMover(mover + 1);
+    }
+
+    if (player[0] === Objetivo[0] && player[1] === Objetivo[1]) {
+      setObjetivoEncontrado(true);
+      setObjetivo([null, null]);
     }
 
     const castelo = [3, 24];
@@ -112,7 +107,7 @@ export default function RepGame() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [player,handleKeyDown]);
+  }, [player, ObjetivoEncontrado, obst]);
 
   const reiniciarJogo = () => {
     setPlayer([numeroAleatorio(11, 47), numeroAleatorio(3, 47)]);
@@ -142,8 +137,9 @@ export default function RepGame() {
           </button>
         </div>
       )}
+      {!tela && (
         <div>
-          <p className="contagem">Contagem: {mover}</p>
+          <p className="contagem">{mover}</p>
           <Tabuleiro
             jogador={player}
             obj={Objetivo}
@@ -152,6 +148,16 @@ export default function RepGame() {
             LamaCapim={lamaCapim}
           />
         </div>
+      )}
+      {tela && (
+        <div className="conteiner">
+          <h1 className="tituloJogo">Stuart e o castelo perdido!</h1>
+          <button className="linkjogo" onClick={telaInicial}>
+            Entrar
+          </button>
+          <div className="personagem"></div>
+        </div>
+      )}
     </div>
   );
 }

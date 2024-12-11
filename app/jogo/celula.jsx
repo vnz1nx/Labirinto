@@ -1,29 +1,52 @@
-import Objetivo from "./Objetivo";
-import Personagem from "./Personagem";
+import Objetivo from "./Obj_Perso/Objetivo";
+import Personagem from "./Obj_Perso/Personagem";
 import "./Styles/StyleCelula.css";
 
 export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaCapim,}) {
   let bloco = "";
   let ponte = "";
-  let obj = "";
+  let objetvo = "";
   let personagem = "";
   let casaCastelo = "";
 
-  const gerarCaminhos = (startX, endX, startY, endY) => {
-    const caminhos = [];
-    for (let i = startX; i < endX; i++) {
-      for (let j = startY; j < endY; j++) {
-        caminhos.push([i, j]);
-      }
+  const rio = [];
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 12; j++) {
+      rio.push([i, j]);
     }
-    return caminhos;
-  };
+  }
 
-  const rio = gerarCaminhos(0, 10, 0, 12);
-  const rioCastelo = gerarCaminhos(5, 10, 10, 23).concat(gerarCaminhos(5, 10, 27, 48));
-  const caminhos = gerarCaminhos(5, 10, 23, 24);
-  const caminhos2 = gerarCaminhos(5, 10, 24, 26);
-  const caminhos3 = gerarCaminhos(5, 10, 26, 27);
+  const rioCastelo = [];
+  for (let i = 5; i < 10; i++) {
+    for (let j = 10; j < 23; j++) {
+      rioCastelo.push([i, j]);
+    }
+  }
+
+  for (let i = 5; i < 10; i++) {
+    for (let j = 27; j < 48; j++) {
+      rioCastelo.push([i, j]);
+    }
+  }
+
+  const caminhos = [[], [], [], [], [], [], [], [], [], []];
+  for (let i = 5; i < 10; i++) {
+    for (let j = 23; j < 24; j++) {
+      caminhos.push([i, j]);
+    }
+  }
+  const caminhos2 = [[], [], [], [], [], [], [], [], [], []];
+  for (let i = 5; i < 10; i++) {
+    for (let j = 24; j < 26; j++) {
+      caminhos2.push([i, j]);
+    }
+  }
+  const caminhos3 = [[], [], [], [], [], [], [], [], [], []];
+  for (let i = 5; i < 10; i++) {
+    for (let j = 26; j < 27; j++) {
+      caminhos3.push([i, j]);
+    }
+  }
 
   const posicaoArvores = [];
   for (let i = 0; i < 2; i++) {
@@ -32,7 +55,6 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
       posicaoArvores.push([j, i]);
     }
   }
-
   const posicaoArvores2 = [];
   for (let i = 48; i < 50; i++) {
     for (let j = 2; j < 50; j++) {
@@ -40,7 +62,6 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
       posicaoArvores2.push([j, i]);
     }
   }
-
   const posicaoCastelo1 = [[3, 24]];
   const posicaoCastelo2 = [[2, 24]];
   const posicaoCastelo3 = [[3, 25]];
@@ -48,19 +69,39 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
 
   const placa = [10, 22];
 
+  const todosOsObstaculos = [
+    ...obst,
+    ...posicaoArvores,
+    ...posicaoArvores2,
+    ...posicaoCastelo1, ...posicaoCastelo2, ...posicaoCastelo3, ...posicaoCastelo4,
+    ...rio,
+    ...rioCastelo,
+    ...caminhos,
+    ...caminhos2,
+    ...caminhos3,
+    placa,
+  ];
+
+  const obstaculoNoCaminho = todosOsObstaculos.some(
+    (obst) => obst[0] === coords[0] && obst[1] === coords[1]
+  );
+
+  if (coords[0] === objetivo[0] && coords[1] === objetivo[1] && !obstaculoNoCaminho) {
+    objetvo = <Objetivo />;
+  }
+
   if (coords[0] === jogador[0] && coords[1] === jogador[1]) {
-    personagem = <Personagem key="Perge" />;
+    personagem = <Personagem/>;
+
+    if (jogador[0] === objetivo[0] && jogador[1] === objetivo[1] && obstaculoNoCaminho) {
+        reiniciarJogo();
+      } 
     if (
       rio.some((pos) => pos[0] === jogador[0] && pos[1] === jogador[1]) ||
       rioCastelo.some((pos) => pos[0] === jogador[0] && pos[1] === jogador[1])
     ) {
-      alert("Você afogou! Recarregue a página!");
       reiniciarJogo();
     }
-  }
-
-  if (coords[0] === objetivo[0] && coords[1] === objetivo[1]) {
-    obj = <Objetivo key="Objetivo" />;
   }
 
   const obstaculoAtual = obst.find(
@@ -75,7 +116,7 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
     const tipoObstaculo = obstaculoAtual[2];
     switch (tipoObstaculo) {
       case 1:
-        bloco = <div className="arvore2" key="arvore2"></div>;
+        bloco = <div className="arvore2 " key="arvore2"></div>;
         break;
       case 2:
         bloco = <div className="pedra" key="pedra"></div>;
@@ -118,7 +159,6 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
   ) {
     bloco = <div className="arvore" key="arvore2"></div>;
   }
-
   if (
     posicaoCastelo1.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])
   ) {
@@ -136,11 +176,9 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
   ) {
     casaCastelo = <div className="castelo4" key="castelo"></div>;
   }
-
   if (rioCastelo.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])) {
     bloco = <div className="rio" key="rio"></div>;
   }
-
   if (placa[0] === coords[0] && placa[1] === coords[1]) {
     bloco = <div className="placa" key="placa"></div>;
   }
@@ -150,8 +188,8 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
       {bloco}
       {ponte}
       {casaCastelo}
+      {objetvo}
       {personagem}
-      {obj}
     </div>
   );
 }
