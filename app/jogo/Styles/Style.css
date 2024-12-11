@@ -3,8 +3,8 @@
   background-size: cover;
   background-repeat: no-repeat;
   z-index: 1;
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
 }
 
 .objetivo {
@@ -12,8 +12,8 @@
   background-size: contain;
   background-repeat: no-repeat;
   z-index: 1;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 70px;
   filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
   animation: bounce 1s infinite;
 }

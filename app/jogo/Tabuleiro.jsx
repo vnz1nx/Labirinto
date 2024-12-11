@@ -1,60 +1,50 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Celula from "./celula";
 import "./Styles/StyleTabuleiro.css";
 
 export default function Tabuleiro({ jogador, obj, obst, reiniciarJogo, LamaCapim }) {
-  const [celula, setCelula] = useState(
-    Array(50)
-      .fill()
-      .map(() => Array(50).fill())
-  );
-
-  const containerRef = useRef(null);
-  const [hasFocused, setHasFocused] = useState(false); // Estado para controlar quando focar
+  const [visao, setVisao] = useState([]);
+  const tamanhoMapa = 80;
+  const raioVisao = 8;
 
   useEffect(() => {
-    if (!hasFocused && containerRef.current) {
-      // Posições da célula do jogador
-      const x = jogador[0];
-      const y = jogador[1];
-
-      // Tamanho de cada célula
-      const cellSize = { width: 73, height: 80 }; // Definido conforme a sua célula
-
-      // Calcular a posição para centralizar o jogador
-      const centerX = x * cellSize.width - containerRef.current.clientWidth / 2 + cellSize.width / 3.2;
-      const centerY = y * cellSize.height - containerRef.current.clientHeight / 2 + cellSize.height / 2;
-
-      // Aplicar a rolagem
-      containerRef.current.scrollTo({
-        left: centerX,
-        top: centerY,
-        behavior: "smooth", // rolagem suave
-      });
-
-      // Marcar como "já focado"
-      setHasFocused(true);
+    centralizarVisao(jogador);
+  }, [jogador]);
+  const centralizarVisao = ([posX, posY]) => {
+    const novaVisao = [];
+    const inicioX = Math.max(0, posX - raioVisao);
+    const fimX = Math.min(tamanhoMapa - 1, posX + raioVisao);
+    const inicioY = Math.max(0, posY - raioVisao);
+    const fimY = Math.min(tamanhoMapa - 1, posY + raioVisao);
+  
+    for (let i = inicioX; i <= fimX; i++) {
+      const linha = [];
+      for (let j = inicioY; j <= fimY; j++) {
+        linha.push([i, j]); // Linha e coluna dentro da matriz
+      }
+      novaVisao.push(linha); // Adiciona a linha ao mapa visível
     }
-  }, [jogador, hasFocused]); // A dependência é o jogador, mas só vai agir se não tiver focado ainda
-
+  
+    setVisao(novaVisao);
+  };
+  
   return (
-    <div className="container" ref={containerRef}>
-      {celula.map((linha, i) => {
-        const temp = linha.map((coluna, j) => {
-          return (
+    <div className="container">
+      {visao.map((linha, i) => (
+        <div key={i} className="mostralinha">
+          {linha.map(([x, y]) => (
             <Celula
-              key={`${i}-${j}`}
-              coords={[i, j]}
+              key={`${x}-${y}`}
+              coords={[x, y]}
               jogador={jogador}
               objetivo={obj}
               obst={obst}
               reiniciarJogo={reiniciarJogo}
               LamaCapim={LamaCapim}
             />
-          );
-        });
-        return <div key={i} className="mostralinha">{temp}</div>;
-      })}
+          ))}
+        </div>
+      ))}
     </div>
   );
 }

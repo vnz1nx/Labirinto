@@ -1,7 +1,7 @@
 .Celula {
   position: relative;
-  height: 80px;
-  width: 73px;
+  height: 50px;
+  width: 43px;
   align-items: center;
   justify-content: center;
 }
@@ -18,14 +18,14 @@
   background-image: url(Imagens/arvorenatal.png);
   background-size: contain;
   background-repeat: no-repeat;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 80px;
 }
 .arvore2 {
   background-image: url(Imagens/arvorenormal.png);
   background-size: contain;
   background-repeat: no-repeat;
-  width: 80px;
+  width: 200px;
   height: 100px;
 }
 .capim {
@@ -33,15 +33,15 @@
   background-size: contain;
   background-repeat: no-repeat;
   z-index: 2;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 70px;
 }
 .pedra {
   border-radius: 20%;
   background-image: url(Imagens/pedra.png);
   background-size: cover;
-  width: 80px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
 }
 .lama {
   border-radius: 25%;
@@ -49,8 +49,8 @@
   background-size: contain;
   background-repeat: no-repeat;
   z-index: 0;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 70px;
 }
 .rio {
   border-radius: 0% 0% 10% 0%;
@@ -58,63 +58,63 @@
   background-size: contain;
   background-repeat: no-repeat;
   z-index: 1;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 70px;
 }
 .castelo1 {
   background-image: url(Imagens/castelo1.png);
   background-size: contain;
   background-repeat: no-repeat;
   top: 4px;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 70px;
 }
 .castelo2 {
   background-image: url(Imagens/castelo2.png);
   background-size: contain;
   background-repeat: no-repeat;
-  right: -15px;
-  width: 80px;
-  height: 100px;
+  right: -10px;
+  width: 50px;
+  height: 70px;
 }
 .castelo3 {
   background-image: url(Imagens/castelo3.png);
   background-size: contain;
   background-repeat: no-repeat;
   top: 4px;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 70px;
 }
 .castelo4 {
   background-image: url(Imagens/castelo4.png);
   background-size: contain;
   background-repeat: no-repeat;
-  right: -15px;
-  width: 80px;
+  right: -8px;
+  width: 50px;
   height: 100px;
 }
 .ponte1 {
   background-image: url(Imagens/ponte1.png);
   background-size: contain;
   background-repeat: no-repeat;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 70px;
   z-index: 0;
 }
 .ponte3 {
   background-image: url(Imagens/ponte2.png);
   background-size: contain;
   background-repeat: no-repeat;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 70px;
   z-index: 0;
 }
 .ponte2 {
   background-image: url(Imagens/ponte3.png);
   background-size: contain;
   background-repeat: no-repeat;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 70px;
   z-index: 0;
 }
 
@@ -122,7 +122,7 @@
   background-image: url(Imagens/placa.png);
   background-size: contain;
   background-repeat: no-repeat;
-  width: 80px;
-  height: 100px;
+  width: 50px;
+  height: 70px;
   z-index: 0;
 }

@@ -1,7 +1,9 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import "./Styles/StyleRepGame.css";
 import Tabuleiro from "./Tabuleiro";
+import TelaInicial from "./TelaInicial";
 
 export default function RepGame() {
   function numeroAleatorio(min, max) {
@@ -11,12 +13,12 @@ export default function RepGame() {
   }
 
   const [player, setPlayer] = useState([
-    numeroAleatorio(11, 47),
-    numeroAleatorio(3, 47),
+    numeroAleatorio(15,47),
+    numeroAleatorio(12, 47),
   ]);
   const [Objetivo, setObjetivo] = useState([
-    numeroAleatorio(19, 47),
-    numeroAleatorio(3, 47),
+    numeroAleatorio(15, 47),
+    numeroAleatorio(15, 47),
   ]);
 
   const [obst, setObst] = useState([]);
@@ -27,15 +29,15 @@ export default function RepGame() {
   const [personagemCastelo, setPersonagemCastelo] = useState(true);
 
   useEffect(() => {
-    const numObstaculos = 250;
+    const numObstaculos = 200;
     const obst = Array.from({ length: numObstaculos }, () => [
-      numeroAleatorio(12, 47),
-      numeroAleatorio(2, 47),
+      numeroAleatorio(15, 47),
+      numeroAleatorio(10, 47),
       numeroAleatorio(1, 2),
     ]);
     const posicoesLamaCapim = Array.from({ length: 50 }, () => [
-      numeroAleatorio(12, 47),
-      numeroAleatorio(2, 47),
+      numeroAleatorio(15, 47),
+      numeroAleatorio(10, 47),
       numeroAleatorio(1, 2),
     ]);
     setObst(obst);
@@ -69,16 +71,17 @@ export default function RepGame() {
     ];
     if (!ObjetivoEncontrado && positionsArray.includes(true)) {
       window.confirm("Ache o objetivo primeiro! Encontre a Excalibur!");
-      setPlayer([numeroAleatorio(11, 47), numeroAleatorio(3, 47)]);
+      setPlayer([numeroAleatorio(15,47),
+        numeroAleatorio(12, 47),]);
       return;
     }
 
     if (!obstaculo) {
-      if (e.key === "ArrowUp" && player[0] > 2) {
+      if (e.key === "ArrowUp" && player[0] > 3) {
         setPlayer([player[0] - 1, player[1]]);
       } else if (e.key === "ArrowDown" && player[0] < 47) {
         setPlayer([player[0] + 1, player[1]]);
-      } else if (e.key === "ArrowLeft" && player[1] > 2) {
+      } else if (e.key === "ArrowLeft" && player[1] > 10) {
         setPlayer([player[0], player[1] - 1]);
       } else if (e.key === "ArrowRight" && player[1] < 47) {
         setPlayer([player[0], player[1] + 1]);
@@ -91,8 +94,8 @@ export default function RepGame() {
       setObjetivo([null, null]);
     }
 
-    const castelo = [3, 24];
-    const castelo1 = [3, 25];
+    const castelo = [4, 24];
+    const castelo1 = [4, 25];
 
     if (player[0] === castelo[0] && player[1] === castelo[1]) {
       setPersonagemCastelo(false);
@@ -110,28 +113,20 @@ export default function RepGame() {
   }, [player, ObjetivoEncontrado, obst]);
 
   const reiniciarJogo = () => {
-    setPlayer([numeroAleatorio(11, 47), numeroAleatorio(3, 47)]);
-    setObjetivo([numeroAleatorio(11, 47), numeroAleatorio(3, 47)]);
+    setPlayer([numeroAleatorio(15,47),
+    numeroAleatorio(12, 47)]);
+    setObjetivo([numeroAleatorio(15,47),
+      numeroAleatorio(12, 47),]);
     setPersonagemCastelo(true);
     setObjetivoEncontrado(false);
     setMover(0);
   };
-
-  if (player[0] === Objetivo[0] && player[1] === Objetivo[1]) {
-    setObjetivoEncontrado(true);
-    setObjetivo([null, null]);
-  }
-
-  function telaInicial() {
-    setTela(false);
-  }
 
   return (
     <div className="game">
       {!tela & !personagemCastelo && (
         <div className="final">
           <h1 className="textoFinal1">Parabéns você chegou ao castelo!</h1>
-          <h1 className="textoFinal2">Deseja jogar novamente?</h1>
           <button className="reiniciar" onClick={reiniciarJogo}>
             Reiniciar!
           </button>
@@ -149,15 +144,7 @@ export default function RepGame() {
           />
         </div>
       )}
-      {tela && (
-        <div className="conteiner">
-          <h1 className="tituloJogo">Stuart e o castelo perdido!</h1>
-          <button className="linkjogo" onClick={telaInicial}>
-            Entrar
-          </button>
-          <div className="personagem"></div>
-        </div>
-      )}
+      {tela && <TelaInicial iniciarJogo={() => setTela(false)} />}
     </div>
   );
 }

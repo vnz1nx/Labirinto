@@ -49,23 +49,30 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
   }
 
   const posicaoArvores = [];
-  for (let i = 0; i < 2; i++) {
-    for (let j = 10; j < 50; j++) {
+  for (let i = 0; i < 3; i++) {
+    for (let j = 10; j < 80; j++) {
       posicaoArvores.push([i, j]);
       posicaoArvores.push([j, i]);
     }
   }
+  const posicaoArvores3 = [];
+  for (let i = 0; i <38; i++) {  // 10 linhas
+    for (let j = 0; j < 7; j++) {  // 5 colunas
+      posicaoArvores.push([i + 10, j + 3]);  // Adicionando árvores nas posições desejadas
+    }
+  }
+  
   const posicaoArvores2 = [];
-  for (let i = 48; i < 50; i++) {
-    for (let j = 2; j < 50; j++) {
+  for (let i = 48; i < 80; i++) {
+    for (let j = 0; j < 50; j++) {
       posicaoArvores2.push([i, j]);
       posicaoArvores2.push([j, i]);
     }
   }
-  const posicaoCastelo1 = [[3, 24]];
-  const posicaoCastelo2 = [[2, 24]];
-  const posicaoCastelo3 = [[3, 25]];
-  const posicaoCastelo4 = [[2, 25]];
+  const posicaoCastelo1 = [[4, 24]];
+  const posicaoCastelo2 = [[3, 24]];
+  const posicaoCastelo3 = [[4, 25]];
+  const posicaoCastelo4 = [[3, 25]];
 
   const placa = [10, 22];
 
@@ -158,6 +165,10 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
     posicaoArvores2.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])
   ) {
     bloco = <div className="arvore" key="arvore2"></div>;
+  }else if (
+    posicaoArvores3.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])
+  ) {
+    bloco = <div className="arvore" key="arvore3"></div>;
   }
   if (
     posicaoCastelo1.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])
