@@ -1,19 +1,30 @@
-html,
-body {
-  padding: 0;
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #1a1a1a;
+  font-family: 'Courier New', monospace;
+  overflow: hidden; /* Evita barra de rolagem indesejada */
 }
 
+/* Container do tabuleiro centralizado e cobrindo toda a tela */
 .container {
-  width: max-content;
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
   width: 100vw;
   height: 100vh;
+  
+  background-image: url("Imagens/grass.png");
+  background-repeat: repeat;
+  background-size: 32px 32px; /* Ajuste ao tamanho da célula */
+  image-rendering: pixelated;
 }
 
+/* Cada linha do tabuleiro */
 .mostralinha {
   display: flex;
   flex-direction: row;
-  background-image: url(Imagens/grass.png);
-  width: max-content;
 }

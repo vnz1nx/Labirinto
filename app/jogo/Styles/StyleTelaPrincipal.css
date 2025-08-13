@@ -1,113 +1,159 @@
+/* Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Fundo */
 body {
   background-image: url('Imagens/imagemCastelo.PNG');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   image-rendering: pixelated;
-  image-orientation: from-image;
-  image-resolution: 300dpi;
+  font-family: 'Courier New', Courier, monospace;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* Container principal */
 .conteiner {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  width: 320px;
-  height: 400px;
-  opacity: 0;
-  animation: fadeIn 1s forwards;
+
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 16px;
+  padding: 35px 25px;
+  width: 340px;
+  height: 420px;
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+
+  animation: fadeIn 0.8s ease forwards;
+  transform: scale(0.95);
 }
 
+/* Animação fade-in */
 @keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
+  to {
     opacity: 1;
+    transform: scale(1);
   }
 }
 
+/* Título do jogo */
 .tituloJogo {
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 15px;
-  line-height: normal;
-  text-shadow: none;
-  font-weight: normal;
-  font-family: 'Courier New', Courier, monospace;
-  animation: slideUp 1s ease-in-out;
+  font-size: 22px;
+  color: #2c2c2c;
+  margin-top: 120px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-shadow: 1px 1px 0 #fff, 2px 2px 4px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.8s ease;
 }
 
+/* Animação slide para cima */
 @keyframes slideUp {
-  0% {
-    transform: translateY(20px);
+  from {
+    transform: translateY(15px);
     opacity: 0;
   }
-  100% {
+  to {
     transform: translateY(0);
     opacity: 1;
   }
 }
 
+/* Botão entrar */
 .linkjogo {
-  width: 100px;
+  width: 150px;
   height: 50px;
-  background-color: #3c7bad;
+  background: linear-gradient(135deg, #2fb4d9, #1a92b8);
   color: #fff;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+  margin-top: auto;
 }
 
 .linkjogo:hover {
-  background-color: #21b7dc;
-  transform: scale(1.10);
+  background: linear-gradient(135deg, #23d3f1, #1e9ec7);
+  transform: scale(1.07);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
+/* Personagem */
 .personagem {
   width: 100px;
   height: 100px;
   background-image: url('Imagens/perso.gif');
   background-size: cover;
   background-position: center;
-  align-items: center;
   position: absolute;
-  top: 24%;
-  right: inherit;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: float 2s ease-in-out infinite;
+  pointer-events: none;
 }
 
-@media (max-width: 768px) {
+/* Efeito flutuante */
+@keyframes float {
+  0%, 100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, -8px);
+  }
+}
+@media (max-width: 480px) {
   .conteiner {
-    width: 260px;
-    height: 350px;
-    padding: 20px;
+    width: 90%;
+    max-width: 300px;
+    min-height: auto;
+    padding: 20px 15px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* Espaçamento uniforme */
+  }
+
+  /* Personagem agora segue o fluxo normal */
+  .personagem {
+    position: static;
+    transform: none;
+    width: 70px;
+    height: 70px;
+    animation: float 2s ease-in-out infinite;
   }
 
   .tituloJogo {
-    font-size: 20px;
-    margin-bottom: 15px;
+    font-size: 16px;
+    margin: 0;
+    line-height: 1.4;
+    text-align: center;
   }
 
   .linkjogo {
-    padding: 10px 20px;
-    font-size: 14px;
+    width: 100%;
+    max-width: 200px;
+    height: 45px;
+    font-size: 15px;
   }
 }
