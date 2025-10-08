@@ -13,7 +13,7 @@ export default function RepGame() {
   }
 
   const [player, setPlayer] = useState([
-    numeroAleatorio(15,47),
+    numeroAleatorio(15, 47),
     numeroAleatorio(12, 47),
   ]);
   const [Objetivo, setObjetivo] = useState([
@@ -71,8 +71,10 @@ export default function RepGame() {
     ];
     if (!ObjetivoEncontrado && positionsArray.includes(true)) {
       window.confirm("Ache o objetivo primeiro! Encontre a Excalibur!");
-      setPlayer([numeroAleatorio(15,47),
-        numeroAleatorio(12, 47),]);
+      setPlayer([
+        numeroAleatorio(15, 47),
+        numeroAleatorio(12, 47),
+      ]);
       return;
     }
 
@@ -86,7 +88,7 @@ export default function RepGame() {
       } else if (e.key === "ArrowRight" && player[1] < 47) {
         setPlayer([player[0], player[1] + 1]);
       }
-      setMover(mover + 1);
+      setMover((prev) => prev + 1);
     }
 
     if (player[0] === Objetivo[0] && player[1] === Objetivo[1]) {
@@ -113,10 +115,14 @@ export default function RepGame() {
   }, [player, ObjetivoEncontrado, obst]);
 
   const reiniciarJogo = () => {
-    setPlayer([numeroAleatorio(15,47),
-    numeroAleatorio(12, 47)]);
-    setObjetivo([numeroAleatorio(15,47),
-      numeroAleatorio(12, 47),]);
+    setPlayer([
+      numeroAleatorio(15, 47),
+      numeroAleatorio(12, 47),
+    ]);
+    setObjetivo([
+      numeroAleatorio(15, 47),
+      numeroAleatorio(12, 47),
+    ]);
     setPersonagemCastelo(true);
     setObjetivoEncontrado(false);
     setMover(0);
@@ -124,7 +130,7 @@ export default function RepGame() {
 
   return (
     <div className="game">
-      {!tela & !personagemCastelo && (
+      {!tela && !personagemCastelo && (
         <div className="final">
           <h1 className="textoFinal1">Parabéns você chegou ao castelo!</h1>
           <button className="reiniciar" onClick={reiniciarJogo}>

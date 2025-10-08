@@ -4,7 +4,7 @@ import "./Styles/StyleRepGame.css";
 
 export default function TelaInicial({ iniciarJogo }) {
   return (
-    <div className="conteiner2">
+    <div className="container2">
       <h1 className="tituloJogo">Stuart e o castelo perdido!</h1>
       <button className="linkjogo" onClick={iniciarJogo}>
         Entrar
