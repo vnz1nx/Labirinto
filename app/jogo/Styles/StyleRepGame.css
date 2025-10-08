@@ -244,11 +244,14 @@ body {
   gap: clamp(16px, 4vw, 40px);
   padding: clamp(16px, 3vw, 24px);
   border-radius: 20px;
-  background: rgba(8, 18, 28, 0.75);
+  background: rgba(8, 18, 28, 0.82);
   border: 1px solid rgba(129, 203, 255, 0.18);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(6px);
   flex-wrap: wrap;
+  position: sticky;
+  top: clamp(12px, 3vw, 28px);
+  z-index: 2;
 }
 
 .hud__stat {
@@ -294,39 +297,43 @@ body {
 
 .game__content {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   display: flex;
-  align-items: stretch;
-  justify-content: center;
-  gap: clamp(22px, 5vw, 60px);
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(22px, 4vw, 56px);
   flex-wrap: wrap;
 }
 
 .board-wrapper {
-  padding: clamp(12px, 2vw, 18px);
+  flex: 1 1 720px;
+  max-width: 860px;
+  padding: clamp(16px, 2.5vw, 28px);
   border-radius: 28px;
   background: radial-gradient(
-    circle at top,
-    rgba(81, 201, 255, 0.08),
-    transparent 70%
-  );
-  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.5);
+      circle at top,
+      rgba(81, 201, 255, 0.1),
+      transparent 70%
+    )
+    rgba(6, 16, 24, 0.72);
+  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(4px);
 }
 
 .status-panel {
-  width: min(360px, 95vw);
+  flex: 0 1 clamp(260px, 25vw, 320px);
   padding: clamp(18px, 3vw, 26px);
   border-radius: 24px;
   display: flex;
   flex-direction: column;
   gap: 18px;
-  background: rgba(11, 28, 42, 0.82);
+  background: rgba(11, 28, 42, 0.78);
   border: 1px solid rgba(103, 189, 255, 0.2);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.48);
-  backdrop-filter: blur(6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.44);
+  backdrop-filter: blur(8px);
 }
 
 .status-panel__title {

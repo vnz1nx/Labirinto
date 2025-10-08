@@ -6,6 +6,7 @@ import Tabuleiro from "./Tabuleiro";
 import TelaInicial from "./TelaInicial";
 
 const LIMITES = { minX: 3, maxX: 47, minY: 10, maxY: 47 };
+const OBSTACLE_COUNT = 160;
 const CASTLE_TILES = [
   [4, 24],
   [4, 25],
@@ -24,7 +25,7 @@ const numeroAleatorio = (min, max) => {
 };
 
 const gerarObstaculos = () =>
-  Array.from({ length: 200 }, () => [
+  Array.from({ length: OBSTACLE_COUNT }, () => [
     numeroAleatorio(15, 47),
     numeroAleatorio(10, 47),
     numeroAleatorio(1, 2),
@@ -61,7 +62,91 @@ const gerarPosicaoLivre = (ocupadas = [], obstaculos = []) => {
     ultimaTentativa = posicao;
   }
 
+  for (let x = LIMITES.minX; x <= LIMITES.maxX; x++) {
+    for (let y = LIMITES.minY; y <= LIMITES.maxY; y++) {
+      const chave = `${x}-${y}`;
+      if (!ocupadasSet.has(chave) && !obstaculosSet.has(chave)) {
+        return [x, y];
+      }
+    }
+  }
+
   return ultimaTentativa;
+};
+
+const expandirCorredor = (corredor, largura = 1) => {
+  const faixa = new Set();
+
+  corredor.forEach(([x, y]) => {
+    for (let dx = -largura; dx <= largura; dx++) {
+      for (let dy = -largura; dy <= largura; dy++) {
+        const nx = x + dx;
+        const ny = y + dy;
+
+        if (
+          nx >= LIMITES.minX &&
+          nx <= LIMITES.maxX &&
+          ny >= LIMITES.minY &&
+          ny <= LIMITES.maxY
+        ) {
+          faixa.add(`${nx}-${ny}`);
+        }
+      }
+    }
+  });
+
+  return faixa;
+};
+
+const criarCorredor = (inicio, fim) => {
+  const corredor = [];
+  if (!inicio || !fim) {
+    return corredor;
+  }
+
+  let [xAtual, yAtual] = inicio;
+  const [xDestino, yDestino] = fim;
+
+  while (xAtual !== xDestino) {
+    corredor.push([xAtual, yAtual]);
+    xAtual += Math.sign(xDestino - xAtual);
+  }
+
+  while (yAtual !== yDestino) {
+    corredor.push([xAtual, yAtual]);
+    yAtual += Math.sign(yDestino - yAtual);
+  }
+
+  corredor.push([xDestino, yDestino]);
+  return corredor;
+};
+
+const removerObstaculosEmFaixas = (obstaculos, faixas) => {
+  if (!faixas.length) {
+    return obstaculos;
+  }
+
+  const faixaSet = new Set();
+  faixas.forEach((faixa) => {
+    faixa.forEach((chave) => faixaSet.add(chave));
+  });
+
+  return obstaculos.filter(([x, y]) => !faixaSet.has(`${x}-${y}`));
+};
+
+const lapidarObstaculosParaFluxo = (obstaculos, jogador, objetivo) => {
+  if (!jogador || jogador.length !== 2) {
+    return obstaculos;
+  }
+
+  const faixas = [expandirCorredor([jogador], 2)];
+
+  if (objetivo && objetivo.length === 2) {
+    faixas.push(expandirCorredor(criarCorredor(jogador, objetivo), 1));
+    faixas.push(expandirCorredor(criarCorredor(objetivo, CASTLE_TILES[0]), 2));
+  }
+
+  return removerObstaculosEmFaixas(obstaculos, faixas);
 };
 
 export default function RepGame() {
@@ -76,8 +161,14 @@ export default function RepGame() {
       obstaculosIniciais
     );
 
+    const obstaculosLapidados = lapidarObstaculosParaFluxo(
+      obstaculosIniciais,
+      jogadorInicial,
+      objetivoInicial
+    );
+
     setupRef.current = {
-      obstaculos: obstaculosIniciais,
+      obstaculos: obstaculosLapidados,
       terrenos: terrenosIniciais,
       objetivo: objetivoInicial,
       jogador: jogadorInicial,
@@ -274,7 +365,13 @@ export default function RepGame() {
     const novoObjetivo = gerarPosicaoLivre([], novosObstaculos);
     const novoJogador = gerarPosicaoLivre([novoObjetivo], novosObstaculos);
 
-    setObst(novosObstaculos);
+    const obstaculosLapidados = lapidarObstaculosParaFluxo(
+      novosObstaculos,
+      novoJogador,
+      novoObjetivo
+    );
+
+    setObst(obstaculosLapidados);
     setLamaCapim(novoTerreno);
     setObjetivo(novoObjetivo);
     setPlayer(novoJogador);

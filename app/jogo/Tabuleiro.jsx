@@ -11,7 +11,7 @@ export default function Tabuleiro({
 }) {
   const [visao, setVisao] = useState([]);
   const tamanhoMapa = 80;
-  const raioVisao = 8;
+  const raioVisao = 10;
 
   const centralizarVisao = useCallback(([posX, posY]) => {
     if (posX == null || posY == null) return;
