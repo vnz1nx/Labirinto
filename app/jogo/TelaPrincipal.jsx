@@ -13,12 +13,12 @@ export default function TelaPrincipal() {
   return (
     <div>
       {!iniciarJogo ? (
-        <div className="conteiner">
-           <div className="personagem"></div>
-            <h3 className="tituloJogo">Stuart e o castelo perdido!</h3>
-            <button className="linkjogo" onClick={iniciar}>
-                Entrar
-            </button>
+        <div className="container">
+          <div className="personagem" />
+          <h3 className="tituloJogo">Stuart e o castelo perdido!</h3>
+          <button className="linkjogo" onClick={iniciar}>
+            Entrar
+          </button>
         </div>
       ) : (
         <RepGame />

@@ -2,8 +2,16 @@
   position: relative;
   height: 50px;
   width: 43px;
+  display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.Celula:hover,
+.Celula:focus-within {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
 }
 
 .Celula > * {

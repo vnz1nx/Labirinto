@@ -2,7 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import Celula from "./celula";
 import "./Styles/StyleTabuleiro.css";
 
-export default function Tabuleiro({ jogador, obj, obst, reiniciarJogo, LamaCapim }) {
+export default function Tabuleiro({
+  jogador,
+  obj,
+  obst,
+  reiniciarJogo,
+  LamaCapim,
+}) {
   const [visao, setVisao] = useState([]);
   const tamanhoMapa = 80;
   const raioVisao = 8;
@@ -34,9 +40,9 @@ export default function Tabuleiro({ jogador, obj, obst, reiniciarJogo, LamaCapim
   }, [jogador, centralizarVisao]);
 
   return (
-    <div className="container">
+    <div className="board">
       {visao.map((linha, i) => (
-        <div key={i} className="mostralinha">
+        <div key={i} className="board__row">
           {linha.map(([x, y]) => (
             <Celula
               key={`${x}-${y}`}
