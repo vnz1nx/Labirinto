@@ -1,10 +1,18 @@
 .board {
-  --cell-size: clamp(44px, 3.35vw, 68px);
+  --board-columns: 21;
+  --board-padding: 24px;
+  --board-width: var(--board-available-width, calc(100vw - 64px));
+  --cell-size: min(
+    64px,
+    calc((var(--board-width) - var(--board-padding)) / var(--board-columns))
+  );
   --cell-height: calc(var(--cell-size) * 1.16);
+  width: 100%;
+  max-width: 100%;
   display: inline-flex;
   flex-direction: column;
   gap: 0;
-  padding: 12px;
+  padding: calc(var(--board-padding) / 2);
   border-radius: 24px;
   border: 3px solid rgba(84, 56, 12, 0.65);
   background: linear-gradient(145deg, rgba(18, 44, 32, 0.95), rgba(9, 24, 17, 0.92));

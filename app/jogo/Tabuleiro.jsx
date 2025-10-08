@@ -53,8 +53,14 @@ export default function Tabuleiro({
     }
   }, [jogador, centralizarVisao]);
 
+  const colunasVisiveis = visao[0]?.length ?? 0;
+  const boardStyle = useMemo(
+    () => ({ "--board-columns": `${Math.max(colunasVisiveis, 1)}` }),
+    [colunasVisiveis]
+  );
+
   return (
-    <div className="board">
+    <div className="board" style={boardStyle}>
       {visao.map((linha, i) => (
         <div key={i} className="board__row">
           {linha.map(([x, y]) => (

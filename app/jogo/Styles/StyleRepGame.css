@@ -306,9 +306,12 @@ body {
 }
 
 .board-wrapper {
-  flex: 1 1 70%;
-  min-width: min(70vw, 1040px);
-  max-width: min(88vw, 1240px);
+  --board-area-width: clamp(320px, 72vw, 1480px);
+  --board-available-width: min(var(--board-area-width), calc(100vw - 64px));
+  flex: 1 1 var(--board-available-width);
+  width: var(--board-available-width);
+  max-width: var(--board-available-width);
+  min-width: min(var(--board-available-width), clamp(280px, 56vw, 1200px));
   padding: clamp(18px, 2vw, 32px);
   border-radius: 32px;
   background: radial-gradient(

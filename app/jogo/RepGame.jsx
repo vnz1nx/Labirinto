@@ -17,6 +17,12 @@ const coordKey = (x, y) => `${x}-${y}`;
 const CASTLE_TILE_KEYS = new Set(
   CASTLE_TILES.map(([x, y]) => coordKey(x, y))
 );
+const MOVIMENTOS = {
+  ArrowUp: [-1, 0],
+  ArrowDown: [1, 0],
+  ArrowLeft: [0, -1],
+  ArrowRight: [0, 1],
+};
 const MAX_DISTANCE = Math.hypot(
   LIMITES.maxX - LIMITES.minX,
   LIMITES.maxY - LIMITES.minY
@@ -151,30 +157,34 @@ const lapidarObstaculosParaFluxo = (obstaculos, jogador, objetivo) => {
   return removerObstaculosEmFaixas(obstaculos, faixas);
 };
 
+const criarNovoCenario = () => {
+  const obstaculosIniciais = gerarObstaculos();
+  const terrenosIniciais = gerarTerrenos();
+  const objetivoInicial = gerarPosicaoLivre([], obstaculosIniciais);
+  const jogadorInicial = gerarPosicaoLivre(
+    [objetivoInicial],
+    obstaculosIniciais
+  );
+
+  const obstaculosLapidados = lapidarObstaculosParaFluxo(
+    obstaculosIniciais,
+    jogadorInicial,
+    objetivoInicial
+  );
+
+  return {
+    obstaculos: obstaculosLapidados,
+    terrenos: terrenosIniciais,
+    objetivo: objetivoInicial,
+    jogador: jogadorInicial,
+  };
+};
+
 export default function RepGame() {
   const setupRef = useRef(null);
 
   if (!setupRef.current) {
-    const obstaculosIniciais = gerarObstaculos();
-    const terrenosIniciais = gerarTerrenos();
-    const objetivoInicial = gerarPosicaoLivre([], obstaculosIniciais);
-    const jogadorInicial = gerarPosicaoLivre(
-      [objetivoInicial],
-      obstaculosIniciais
-    );
-
-    const obstaculosLapidados = lapidarObstaculosParaFluxo(
-      obstaculosIniciais,
-      jogadorInicial,
-      objetivoInicial
-    );
-
-    setupRef.current = {
-      obstaculos: obstaculosLapidados,
-      terrenos: terrenosIniciais,
-      objetivo: objetivoInicial,
-      jogador: jogadorInicial,
-    };
+    setupRef.current = criarNovoCenario();
   }
 
   const [obst, setObst] = useState(setupRef.current.obstaculos);
@@ -266,20 +276,69 @@ export default function RepGame() {
     }
   }, [objetivoEncontrado, tela]);
 
+  const avaliarMovimento = useCallback(
+    (posicaoAtual, delta) => {
+      const proximaPosicao = [
+        posicaoAtual[0] + delta[0],
+        posicaoAtual[1] + delta[1],
+      ];
+      const proximaChave = coordKey(
+        proximaPosicao[0],
+        proximaPosicao[1]
+      );
+
+      if (
+        proximaPosicao[0] < LIMITES.minX ||
+        proximaPosicao[0] > LIMITES.maxX ||
+        proximaPosicao[1] < LIMITES.minY ||
+        proximaPosicao[1] > LIMITES.maxY
+      ) {
+        return {
+          proximaPosicao: posicaoAtual,
+          warning: "As árvores fecham o caminho por aqui.",
+        };
+      }
+
+      if (obstaculosKeySet.has(proximaChave)) {
+        return {
+          proximaPosicao: posicaoAtual,
+          warning: "Algo bloqueia o caminho!",
+        };
+      }
+
+      const tileCastelo = CASTLE_TILE_KEYS.has(proximaChave);
+
+      if (!objetivoEncontrado && tileCastelo) {
+        return {
+          proximaPosicao: posicaoAtual,
+          warning: "Encontre a Excalibur antes de entrar no castelo!",
+          status:
+            "Continue explorando a floresta para achar a espada lendária.",
+        };
+      }
+
+      const encontrouObjetivo =
+        objetivo[0] != null &&
+        objetivo[1] != null &&
+        proximaPosicao[0] === objetivo[0] &&
+        proximaPosicao[1] === objetivo[1];
+
+      return {
+        proximaPosicao,
+        encontrouObjetivo,
+        entrouNoCastelo: objetivoEncontrado && tileCastelo,
+      };
+    },
+    [objetivoEncontrado, objetivo, obstaculosKeySet]
+  );
+
   const handleKeyDown = useCallback(
     (event) => {
       if (tela || !personagemCastelo) {
         return;
       }
 
-      const movimentos = {
-        ArrowUp: [-1, 0],
-        ArrowDown: [1, 0],
-        ArrowLeft: [0, -1],
-        ArrowRight: [0, 1],
-      };
-
-      const delta = movimentos[event.key];
+      const delta = MOVIMENTOS[event.key];
 
       if (!delta) {
         return;
@@ -288,81 +347,34 @@ export default function RepGame() {
       event.preventDefault();
 
       setPlayer((posicaoAtual) => {
-        const proximaPosicao = [
-          posicaoAtual[0] + delta[0],
-          posicaoAtual[1] + delta[1],
-        ];
-        const proximaChave = coordKey(
-          proximaPosicao[0],
-          proximaPosicao[1]
-        );
+        const resultado = avaliarMovimento(posicaoAtual, delta);
 
-        const foraDoMapa =
-          proximaPosicao[0] < LIMITES.minX ||
-          proximaPosicao[0] > LIMITES.maxX ||
-          proximaPosicao[1] < LIMITES.minY ||
-          proximaPosicao[1] > LIMITES.maxY;
-
-        if (foraDoMapa) {
-          setWarningMessage("As árvores fecham o caminho por aqui.");
-          return posicaoAtual;
-        }
-
-        const temObstaculo = obstaculosKeySet.has(proximaChave);
-
-        if (temObstaculo) {
-          setWarningMessage("Algo bloqueia o caminho!");
-          return posicaoAtual;
-        }
-
-        const tileCastelo = CASTLE_TILE_KEYS.has(proximaChave);
-
-        if (!objetivoEncontrado && tileCastelo) {
-          setWarningMessage(
-            "Encontre a Excalibur antes de entrar no castelo!"
-          );
-          setStatusMessage(
-            "Continue explorando a floresta para achar a espada lendária."
-          );
-          return posicaoAtual;
-        }
-
-        if (
-          posicaoAtual[0] === proximaPosicao[0] &&
-          posicaoAtual[1] === proximaPosicao[1]
-        ) {
+        if (resultado.warning) {
+          setWarningMessage(resultado.warning);
+          if (resultado.status) {
+            setStatusMessage(resultado.status);
+          }
           return posicaoAtual;
         }
 
         setWarningMessage("");
         setMover((prev) => prev + 1);
 
-        if (
-          objetivo[0] != null &&
-          objetivo[1] != null &&
-          proximaPosicao[0] === objetivo[0] &&
-          proximaPosicao[1] === objetivo[1]
-        ) {
+        if (resultado.encontrouObjetivo) {
           setObjetivoEncontrado(true);
           setObjetivo([null, null]);
           setStatusMessage("Você encontrou a Excalibur! Retorne ao castelo.");
         }
 
-        if (objetivoEncontrado && tileCastelo) {
+        if (resultado.entrouNoCastelo) {
           setPersonagemCastelo(false);
           setStatusMessage("Missão cumprida! Stuart chegou ao castelo.");
         }
 
-        return proximaPosicao;
+        return resultado.proximaPosicao ?? posicaoAtual;
       });
     },
-    [
-      tela,
-      personagemCastelo,
-      obstaculosKeySet,
-      objetivo,
-      objetivoEncontrado,
-    ]
+    [tela, personagemCastelo, avaliarMovimento]
   );
 
   useEffect(() => {
@@ -373,32 +385,18 @@ export default function RepGame() {
   }, [handleKeyDown]);
 
   const reiniciarJogo = useCallback(() => {
-    const novosObstaculos = gerarObstaculos();
-    const novoTerreno = gerarTerrenos();
-    const novoObjetivo = gerarPosicaoLivre([], novosObstaculos);
-    const novoJogador = gerarPosicaoLivre([novoObjetivo], novosObstaculos);
+    const novoCenario = criarNovoCenario();
 
-    const obstaculosLapidados = lapidarObstaculosParaFluxo(
-      novosObstaculos,
-      novoJogador,
-      novoObjetivo
-    );
-
-    setObst(obstaculosLapidados);
-    setLamaCapim(novoTerreno);
-    setObjetivo(novoObjetivo);
-    setPlayer(novoJogador);
+    setObst(novoCenario.obstaculos);
+    setLamaCapim(novoCenario.terrenos);
+    setObjetivo(novoCenario.objetivo);
+    setPlayer(novoCenario.jogador);
     setPersonagemCastelo(true);
     setObjetivoEncontrado(false);
     setMover(0);
-    setStatusMessage("Use as setas para explorar e encontrar a Excalibur!");
+    setStatusMessage("Use as setas do teclado para explorar a floresta.");
     setWarningMessage("");
-    setupRef.current = {
-      obstaculos: obstaculosLapidados,
-      terrenos: novoTerreno,
-      objetivo: novoObjetivo,
-      jogador: novoJogador,
-    };
+    setupRef.current = novoCenario;
   }, []);
 
   const iniciarAventura = useCallback(() => {
