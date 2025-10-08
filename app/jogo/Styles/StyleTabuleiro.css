@@ -1,6 +1,6 @@
 .board {
   --board-columns: 21;
-  --board-padding: 24px;
+  --board-padding: clamp(18px, 2.5vw, 32px);
   --board-width: var(--board-available-width, calc(100vw - 64px));
   --cell-size: min(
     64px,
