@@ -21,15 +21,12 @@ body {
 }
 
 .game {
-  --game-padding-y: clamp(24px, 6vw, 64px);
+  --game-padding-y: clamp(24px, 6vh, 72px);
   --game-padding-x: clamp(16px, 5vw, 72px);
-  --game-gap: clamp(22px, 3vw, 52px);
-  --game-panel-width: clamp(260px, 26vw, 340px);
-  --game-board-area: clamp(360px, 72vw, 1480px);
-  --game-board-width: min(
-    var(--game-board-area),
-    calc(100vw - (var(--game-padding-x) * 2))
-  );
+  --game-panel-offset: clamp(16px, 4vw, 40px);
+  --game-panel-width: clamp(260px, 32vw, 380px);
+  --game-stage-width: clamp(420px, 72vw, 1320px);
+  --game-board-width: var(--game-stage-width);
   position: relative;
   min-height: 100vh;
   width: 100%;
@@ -37,6 +34,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: clamp(24px, 4vw, 48px);
   overflow: hidden;
 }
@@ -246,23 +244,25 @@ body {
 }
 
 .hud {
-  width: min(100%, var(--game-board-width, 100%));
-  max-width: min(100%, var(--game-board-width, 100%));
+  position: fixed;
+  top: var(--game-panel-offset);
+  left: var(--game-panel-offset);
+  z-index: 3;
+  width: min(
+    var(--game-panel-width),
+    calc(100vw - (var(--game-panel-offset) * 2))
+  );
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: clamp(16px, 4vw, 40px);
-  padding: clamp(16px, 3vw, 24px);
+  justify-content: space-between;
+  gap: clamp(12px, 3vw, 28px);
+  padding: clamp(14px, 2.8vw, 24px);
   border-radius: 20px;
-  background: rgba(8, 18, 28, 0.82);
-  border: 1px solid rgba(129, 203, 255, 0.18);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(6px);
+  background: rgba(8, 18, 28, 0.86);
+  border: 1px solid rgba(129, 203, 255, 0.24);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(8px);
   flex-wrap: wrap;
-  position: sticky;
-  top: clamp(12px, 3vw, 28px);
-  z-index: 2;
-  margin: 0 auto;
 }
 
 .hud__stat {
@@ -306,27 +306,23 @@ body {
   transform: translateY(-2px);
 }
 
-.game__content {
+.game__stage {
   width: 100%;
-  max-width: min(
-    100%,
-    calc(var(--game-board-width, 100%) + var(--game-gap) + var(--game-panel-width))
-  );
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, var(--game-panel-width));
-  align-items: start;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  gap: var(--game-gap);
-  margin: 0 auto;
 }
 
 .board-wrapper {
-  --board-available-width: min(100%, var(--game-board-width, 100%));
-  flex: 1 1 var(--board-available-width);
-  width: min(100%, var(--game-board-width, 100%));
-  max-width: min(100%, var(--game-board-width, 100%));
-  min-width: min(100%, var(--game-board-width, 100%));
-  padding: clamp(18px, 2vw, 32px);
+  --board-available-width: min(
+    var(--game-board-width, 100%),
+    calc(100vw - (var(--game-panel-offset) * 2)),
+    calc((100vh - (var(--game-panel-offset) * 2)) * 0.92)
+  );
+  width: var(--board-available-width);
+  max-width: var(--board-available-width);
+  min-width: min(320px, var(--board-available-width));
+  padding: clamp(20px, 2.6vw, 36px);
   border-radius: 32px;
   background: radial-gradient(
       circle at top,
@@ -339,55 +335,102 @@ body {
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(4px);
-  justify-self: center;
 }
 
-.status-panel {
-  flex: 1 1 var(--game-panel-width);
-  max-width: var(--game-panel-width);
-  width: min(100%, var(--game-panel-width));
-  padding: clamp(18px, 3vw, 26px);
+.floating-panel {
+  position: fixed;
+  top: var(--game-panel-offset);
+  right: var(--game-panel-offset);
+  width: min(
+    var(--game-panel-width),
+    calc(100vw - (var(--game-panel-offset) * 2))
+  );
+  max-height: min(72vh, 640px);
+  padding: clamp(18px, 2.8vw, 28px);
   border-radius: 24px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  background: rgba(11, 28, 42, 0.78);
-  border: 1px solid rgba(103, 189, 255, 0.2);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.44);
-  backdrop-filter: blur(8px);
-  justify-self: center;
+  gap: clamp(12px, 2vw, 20px);
+  background: rgba(11, 28, 42, 0.82);
+  border: 1px solid rgba(103, 189, 255, 0.25);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  z-index: 3;
 }
 
-.status-panel__title {
+.floating-panel--compact {
+  width: min(240px, calc(100vw - (var(--game-panel-offset) * 2)));
+  max-height: min(58vh, 420px);
+  font-size: 0.94rem;
+}
+
+.floating-panel--expanded {
+  width: min(380px, calc(100vw - (var(--game-panel-offset) * 2)));
+  max-height: min(82vh, 720px);
+}
+
+.floating-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.floating-panel__title {
   font-size: 20px;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  margin: 0;
 }
 
-.status-panel__message {
+.floating-panel__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.floating-panel__action {
+  appearance: none;
+  border: 1px solid rgba(113, 203, 255, 0.45);
+  background: rgba(21, 46, 68, 0.55);
+  color: #dff6ff;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.floating-panel__action:hover {
+  background: rgba(54, 162, 235, 0.2);
+  transform: translateY(-1px);
+}
+
+.floating-panel__message {
   line-height: 1.6;
   color: rgba(222, 240, 255, 0.86);
 }
 
-.status-panel__message--near {
+.floating-panel__message--near {
   color: #c7f2ff;
   text-shadow: 0 0 14px rgba(97, 196, 255, 0.35);
   transition: text-shadow 0.3s ease;
 }
 
-.status-panel__message--calm {
+.floating-panel__message--calm {
   color: rgba(198, 216, 255, 0.8);
   font-style: italic;
 }
 
-.status-panel__message--success {
+.floating-panel__message--success {
   color: #6cffdc;
   text-shadow: 0 0 18px rgba(108, 255, 220, 0.55);
   font-weight: 600;
 }
 
-.status-panel__warning {
+.floating-panel__warning {
   padding: 10px 14px;
   border-radius: 14px;
   background: rgba(255, 196, 108, 0.16);
@@ -397,30 +440,20 @@ body {
   animation: pulse 1s ease-in-out infinite alternate;
 }
 
-.status-panel__tips {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-left: 18px;
-  color: rgba(205, 228, 255, 0.78);
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-.progress {
+.floating-panel__progress {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.progress__label {
+.floating-panel__label {
   font-size: 13px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(172, 220, 255, 0.65);
 }
 
-.progress__track {
+.floating-panel__track {
   position: relative;
   height: 10px;
   border-radius: 999px;
@@ -428,19 +461,52 @@ body {
   overflow: hidden;
 }
 
-.progress__fill {
+.floating-panel__fill {
   position: absolute;
   inset: 0;
-  width: 0;
   background: linear-gradient(135deg, #42ffb8, #46b1ff);
   border-radius: 999px;
   transition: width 0.35s ease-out;
   box-shadow: 0 0 18px rgba(66, 255, 184, 0.45);
 }
 
-.progress__hint {
+.floating-panel__hint {
   font-size: 14px;
   color: rgba(206, 235, 255, 0.85);
+}
+
+.floating-panel__tips {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 18px;
+  color: rgba(205, 228, 255, 0.78);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
+.floating-panel__toggle {
+  position: fixed;
+  right: var(--game-panel-offset);
+  bottom: var(--game-panel-offset);
+  padding: 14px 24px;
+  border-radius: 999px;
+  background: rgba(21, 46, 68, 0.8);
+  color: #dff6ff;
+  border: 1px solid rgba(113, 203, 255, 0.5);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  transition: background 0.2s ease, transform 0.2s ease;
+  z-index: 3;
+}
+
+.floating-panel__toggle:hover {
+  background: rgba(54, 162, 235, 0.24);
+  transform: translateY(-2px);
 }
 
 .final {
@@ -561,13 +627,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .start-panel,
   .final__content,
-  .progress__fill,
+  .floating-panel__fill,
   .hud__button,
   .start-panel__button,
   .Celula,
   .game__aurora,
   .game__particle,
-  .status-panel__warning,
+  .floating-panel__warning,
   .Personagem,
   .objetivo {
     animation-duration: 0.01ms !important;
@@ -576,51 +642,63 @@ body {
   }
 }
 
-@media (max-width: 900px) {
-  .hud {
-    justify-content: space-between;
+@media (max-width: 1120px) {
+  .game {
+    --game-panel-width: min(360px, 48vw);
+    --game-stage-width: clamp(420px, 82vw, 1200px);
+  }
+
+  .floating-panel {
+    max-height: min(64vh, 520px);
   }
 }
 
-@media (max-width: 1120px) {
-  .game {
-    --game-panel-width: min(var(--game-board-width, 100%), clamp(280px, 52vw, 420px));
+@media (max-width: 900px) {
+  .hud {
+    left: 50%;
+    transform: translateX(-50%);
+    justify-content: center;
+    width: min(90vw, 520px);
   }
 
-  .game__content {
-    grid-template-columns: minmax(0, 1fr);
-    max-width: min(100%, var(--game-board-width, 100%));
+  .floating-panel,
+  .floating-panel--compact,
+  .floating-panel--expanded {
+    right: 50%;
+    left: auto;
+    transform: translateX(50%);
+    top: auto;
+    bottom: calc(var(--game-panel-offset) * 2.2);
+    width: min(90vw, 520px);
+    max-height: min(50vh, 420px);
   }
 
-  .board-wrapper {
-    width: min(100%, var(--game-board-width, 100%));
-  }
-
-  .status-panel {
-    width: min(100%, var(--game-board-width, 100%));
-    max-width: min(100%, var(--game-board-width, 100%));
-    justify-self: center;
+  .floating-panel__toggle {
+    right: 50%;
+    transform: translateX(50%);
+    bottom: var(--game-panel-offset);
   }
 }
 
 @media (max-width: 768px) {
   .game {
     --game-padding-y: clamp(20px, 5vw, 32px);
-    --game-padding-x: clamp(12px, 4vw, 24px);
-    --game-panel-width: min(100%, clamp(280px, 60vw, 420px));
+    --game-padding-x: clamp(12px, 5vw, 24px);
+    --game-stage-width: clamp(320px, 88vw, 960px);
   }
 
   .hud {
     flex-direction: column;
     align-items: stretch;
+    gap: clamp(12px, 3vw, 24px);
   }
 
   .hud__button {
     width: 100%;
   }
 
-  .status-panel {
-    width: min(100%, var(--game-board-width, 100%));
+  .floating-panel__actions {
+    flex-direction: column;
   }
 }
 
@@ -634,7 +712,13 @@ body {
     height: 96px;
   }
 
-  .game__content {
-    gap: 18px;
+  .floating-panel,
+  .floating-panel--compact,
+  .floating-panel--expanded {
+    width: min(92vw, 420px);
+  }
+
+  .floating-panel__toggle {
+    width: min(92vw, 420px);
   }
 }

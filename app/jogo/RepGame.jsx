@@ -49,6 +49,7 @@ const gerarTerrenos = () =>
   ]);
 
 const PARTICLES = Array.from({ length: 12 }, (_, index) => index);
+const TIP_SIZES = ["compact", "medium", "expanded"];
 
 const gerarPosicaoLivre = (ocupadas = [], obstaculos = []) => {
   const ocupadasSet = new Set(ocupadas.map(([x, y]) => coordKey(x, y)));
@@ -199,6 +200,8 @@ export default function RepGame() {
     "Use as setas do teclado para explorar a floresta."
   );
   const [warningMessage, setWarningMessage] = useState("");
+  const [tipsVisible, setTipsVisible] = useState(true);
+  const [tipsSizeIndex, setTipsSizeIndex] = useState(1);
 
   const obstaculosKeySet = useMemo(
     () => new Set(obst.map(([x, y]) => coordKey(x, y))),
@@ -250,13 +253,13 @@ export default function RepGame() {
 
   const statusHighlightClass = useMemo(() => {
     if (objetivoEncontrado) {
-      return "status-panel__message--success";
+      return "floating-panel__message--success";
     }
     if (progressoObjetivo >= 70) {
-      return "status-panel__message--near";
+      return "floating-panel__message--near";
     }
     if (progressoObjetivo <= 25) {
-      return "status-panel__message--calm";
+      return "floating-panel__message--calm";
     }
     return "";
   }, [objetivoEncontrado, progressoObjetivo]);
@@ -404,6 +407,16 @@ export default function RepGame() {
     setTela(false);
   }, [reiniciarJogo]);
 
+  const toggleTipsVisibility = useCallback(() => {
+    setTipsVisible((prev) => !prev);
+  }, []);
+
+  const cycleTipsSize = useCallback(() => {
+    setTipsSizeIndex((prev) => (prev + 1) % TIP_SIZES.length);
+  }, []);
+
+  const tipsSize = TIP_SIZES[tipsSizeIndex];
+
   return (
     <div className="game">
       <div className="game__layer" aria-hidden="true">
@@ -439,7 +452,7 @@ export default function RepGame() {
             </button>
           </div>
 
-          <div className="game__content">
+          <div className="game__stage">
             <div className="board-wrapper">
               <Tabuleiro
                 jogador={player}
@@ -449,34 +462,69 @@ export default function RepGame() {
                 LamaCapim={lamaCapim}
               />
             </div>
+          </div>
 
-            <aside className="status-panel">
-              <h2 className="status-panel__title">Diário de bordo</h2>
-              <p className={`status-panel__message ${statusHighlightClass}`}>
+          {tipsVisible ? (
+            <aside
+              className={`floating-panel floating-panel--${tipsSize}`}
+              role="complementary"
+              aria-label="Diário de bordo e instruções"
+            >
+              <div className="floating-panel__header">
+                <h2 className="floating-panel__title">Diário de bordo</h2>
+                <div className="floating-panel__actions">
+                  <button
+                    type="button"
+                    className="floating-panel__action"
+                    onClick={cycleTipsSize}
+                  >
+                    Ajustar tamanho
+                  </button>
+                  <button
+                    type="button"
+                    className="floating-panel__action"
+                    onClick={toggleTipsVisibility}
+                    aria-label="Ocultar instruções"
+                  >
+                    Ocultar
+                  </button>
+                </div>
+              </div>
+              <p className={`floating-panel__message ${statusHighlightClass}`}>
                 {statusMessage}
               </p>
               {warningMessage && (
-                <p className="status-panel__warning" aria-live="assertive">
+                <p className="floating-panel__warning" aria-live="assertive">
                   {warningMessage}
                 </p>
               )}
-              <div className="progress" role="presentation">
-                <span className="progress__label">Distância até o objetivo</span>
-                <div className="progress__track" aria-hidden="true">
+              <div className="floating-panel__progress" role="presentation">
+                <span className="floating-panel__label">
+                  Distância até o objetivo
+                </span>
+                <div className="floating-panel__track" aria-hidden="true">
                   <div
-                    className="progress__fill"
+                    className="floating-panel__fill"
                     style={{ width: `${progressoObjetivo}%` }}
                   />
                 </div>
-                <span className="progress__hint">{progressoDescricao}</span>
+                <span className="floating-panel__hint">{progressoDescricao}</span>
               </div>
-              <ul className="status-panel__tips">
+              <ul className="floating-panel__tips">
                 <li>Use as teclas direcionais para mover Stuart.</li>
                 <li>Evite rios, lama e pedras para não recomeçar.</li>
                 <li>Leve a Excalibur até o castelo para vencer.</li>
               </ul>
             </aside>
-          </div>
+          ) : (
+            <button
+              type="button"
+              className="floating-panel__toggle"
+              onClick={toggleTipsVisibility}
+            >
+              Mostrar instruções
+            </button>
+          )}
         </>
       )}
 
