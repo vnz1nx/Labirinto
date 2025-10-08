@@ -13,6 +13,10 @@ const CASTLE_TILES = [
   [3, 24],
   [3, 25],
 ];
+const coordKey = (x, y) => `${x}-${y}`;
+const CASTLE_TILE_KEYS = new Set(
+  CASTLE_TILES.map(([x, y]) => coordKey(x, y))
+);
 const MAX_DISTANCE = Math.hypot(
   LIMITES.maxX - LIMITES.minX,
   LIMITES.maxY - LIMITES.minY
@@ -41,8 +45,8 @@ const gerarTerrenos = () =>
 const PARTICLES = Array.from({ length: 12 }, (_, index) => index);
 
 const gerarPosicaoLivre = (ocupadas = [], obstaculos = []) => {
-  const ocupadasSet = new Set(ocupadas.map(([x, y]) => `${x}-${y}`));
-  const obstaculosSet = new Set(obstaculos.map(([x, y]) => `${x}-${y}`));
+  const ocupadasSet = new Set(ocupadas.map(([x, y]) => coordKey(x, y)));
+  const obstaculosSet = new Set(obstaculos.map(([x, y]) => coordKey(x, y)));
   let ultimaTentativa = [LIMITES.minX, LIMITES.minY];
 
   for (let tentativas = 0; tentativas < 500; tentativas++) {
@@ -50,10 +54,8 @@ const gerarPosicaoLivre = (ocupadas = [], obstaculos = []) => {
       numeroAleatorio(15, 47),
       numeroAleatorio(12, 47),
     ];
-    const chave = `${posicao[0]}-${posicao[1]}`;
-    const tileCastelo = CASTLE_TILES.some(
-      ([x, y]) => x === posicao[0] && y === posicao[1]
-    );
+    const chave = coordKey(posicao[0], posicao[1]);
+    const tileCastelo = CASTLE_TILE_KEYS.has(chave);
 
     if (!ocupadasSet.has(chave) && !obstaculosSet.has(chave) && !tileCastelo) {
       return posicao;
@@ -64,7 +66,7 @@ const gerarPosicaoLivre = (ocupadas = [], obstaculos = []) => {
 
   for (let x = LIMITES.minX; x <= LIMITES.maxX; x++) {
     for (let y = LIMITES.minY; y <= LIMITES.maxY; y++) {
-      const chave = `${x}-${y}`;
+      const chave = coordKey(x, y);
       if (!ocupadasSet.has(chave) && !obstaculosSet.has(chave)) {
         return [x, y];
       }
@@ -188,6 +190,11 @@ export default function RepGame() {
   );
   const [warningMessage, setWarningMessage] = useState("");
 
+  const obstaculosKeySet = useMemo(
+    () => new Set(obst.map(([x, y]) => coordKey(x, y))),
+    [obst]
+  );
+
   const distanciaObjetivo = useMemo(() => {
     if (
       objetivoEncontrado ||
@@ -285,6 +292,10 @@ export default function RepGame() {
           posicaoAtual[0] + delta[0],
           posicaoAtual[1] + delta[1],
         ];
+        const proximaChave = coordKey(
+          proximaPosicao[0],
+          proximaPosicao[1]
+        );
 
         const foraDoMapa =
           proximaPosicao[0] < LIMITES.minX ||
@@ -297,18 +308,14 @@ export default function RepGame() {
           return posicaoAtual;
         }
 
-        const temObstaculo = obst.some(
-          ([x, y]) => x === proximaPosicao[0] && y === proximaPosicao[1]
-        );
+        const temObstaculo = obstaculosKeySet.has(proximaChave);
 
         if (temObstaculo) {
           setWarningMessage("Algo bloqueia o caminho!");
           return posicaoAtual;
         }
 
-        const tileCastelo = CASTLE_TILES.some(
-          ([x, y]) => x === proximaPosicao[0] && y === proximaPosicao[1]
-        );
+        const tileCastelo = CASTLE_TILE_KEYS.has(proximaChave);
 
         if (!objetivoEncontrado && tileCastelo) {
           setWarningMessage(
@@ -349,7 +356,13 @@ export default function RepGame() {
         return proximaPosicao;
       });
     },
-    [tela, personagemCastelo, obst, objetivo, objetivoEncontrado]
+    [
+      tela,
+      personagemCastelo,
+      obstaculosKeySet,
+      objetivo,
+      objetivoEncontrado,
+    ]
   );
 
   useEffect(() => {
@@ -380,6 +393,12 @@ export default function RepGame() {
     setMover(0);
     setStatusMessage("Use as setas para explorar e encontrar a Excalibur!");
     setWarningMessage("");
+    setupRef.current = {
+      obstaculos: obstaculosLapidados,
+      terrenos: novoTerreno,
+      objetivo: novoObjetivo,
+      jogador: novoJogador,
+    };
   }, []);
 
   const iniciarAventura = useCallback(() => {

@@ -297,26 +297,27 @@ body {
 
 .game__content {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1600px;
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: clamp(22px, 4vw, 56px);
+  justify-content: center;
+  gap: clamp(22px, 3vw, 52px);
   flex-wrap: wrap;
 }
 
 .board-wrapper {
-  flex: 1 1 720px;
-  max-width: 860px;
-  padding: clamp(16px, 2.5vw, 28px);
-  border-radius: 28px;
+  flex: 1 1 70%;
+  min-width: min(70vw, 1040px);
+  max-width: min(88vw, 1240px);
+  padding: clamp(18px, 2vw, 32px);
+  border-radius: 32px;
   background: radial-gradient(
       circle at top,
-      rgba(81, 201, 255, 0.1),
+      rgba(81, 201, 255, 0.12),
       transparent 70%
     )
     rgba(6, 16, 24, 0.72);
-  box-shadow: 0 22px 45px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 24px 52px rgba(0, 0, 0, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -324,7 +325,9 @@ body {
 }
 
 .status-panel {
-  flex: 0 1 clamp(260px, 25vw, 320px);
+  flex: 1 1 260px;
+  max-width: 340px;
+  width: min(28%, 340px);
   padding: clamp(18px, 3vw, 26px);
   border-radius: 24px;
   display: flex;
@@ -557,6 +560,24 @@ body {
 @media (max-width: 900px) {
   .hud {
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 1120px) {
+  .game__content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .board-wrapper {
+    min-width: min(92vw, 960px);
+    max-width: min(95vw, 1040px);
+  }
+
+  .status-panel {
+    width: min(92vw, 440px);
+    max-width: none;
+    order: 2;
   }
 }
 

@@ -1,4 +1,6 @@
 .board {
+  --cell-size: clamp(44px, 3.35vw, 68px);
+  --cell-height: calc(var(--cell-size) * 1.16);
   display: inline-flex;
   flex-direction: column;
   gap: 0;

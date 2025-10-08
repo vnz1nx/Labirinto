@@ -2,188 +2,162 @@ import Objetivo from "./Obj_Perso/Objetivo";
 import Personagem from "./Obj_Perso/Personagem";
 import "./Styles/StyleCelula.css";
 
+const coordKey = (x, y) => `${x}-${y}`;
+
+const createRectSet = (...rects) => {
+  const set = new Set();
+  rects.forEach(([xIni, xFim, yIni, yFim]) => {
+    for (let x = xIni; x < xFim; x++) {
+      for (let y = yIni; y < yFim; y++) {
+        set.add(coordKey(x, y));
+      }
+    }
+  });
+  return set;
+};
+
+const mergeSets = (...sets) => {
+  const merged = new Set();
+  sets.forEach((set) => {
+    set.forEach((value) => merged.add(value));
+  });
+  return merged;
+};
+
+const RIVER_TILES = createRectSet([0, 10, 0, 12]);
+const CASTLE_RIVER_TILES = createRectSet(
+  [5, 10, 10, 23],
+  [5, 10, 27, 48]
+);
+
+const PATH_TILE_SETS = {
+  ponte1: createRectSet([5, 10, 23, 24]),
+  ponte2: createRectSet([5, 10, 24, 26]),
+  ponte3: createRectSet([5, 10, 26, 27]),
+};
+
+const PATH_TILE_CLASS = new Map();
+Object.entries(PATH_TILE_SETS).forEach(([className, set]) => {
+  set.forEach((key) => PATH_TILE_CLASS.set(key, className));
+});
+
+const TREE_BORDERS = createRectSet([0, 3, 10, 80], [10, 80, 0, 3]);
+const TREE_DEPTH = createRectSet([10, 48, 3, 10]);
+const TREE_RING = createRectSet([48, 80, 0, 50], [0, 50, 48, 80]);
+const TREE_TILES = mergeSets(TREE_BORDERS, TREE_DEPTH, TREE_RING);
+
+const CASTLE_TILES = new Map([
+  [coordKey(4, 24), "castelo1"],
+  [coordKey(3, 24), "castelo2"],
+  [coordKey(4, 25), "castelo3"],
+  [coordKey(3, 25), "castelo4"],
+]);
+
+const SIGN_TILE_KEY = coordKey(10, 22);
+
+const STATIC_BLOCKERS = mergeSets(
+  RIVER_TILES,
+  CASTLE_RIVER_TILES,
+  PATH_TILE_SETS.ponte1,
+  PATH_TILE_SETS.ponte2,
+  PATH_TILE_SETS.ponte3,
+  TREE_TILES,
+  new Set(CASTLE_TILES.keys()),
+  new Set([SIGN_TILE_KEY])
+);
+
+const DANGER_RIVER_TILES = mergeSets(RIVER_TILES, CASTLE_RIVER_TILES);
+
 export default function Celula({
   coords,
   jogador,
   objetivo,
-  obst,
+  obstMap,
   reiniciarJogo,
-  LamaCapim,
+  terrenosMap,
 }) {
-  let bloco = "";
-  let ponte = "";
-  let objetivoComp = "";
-  let personagem = "";
-  let casaCastelo = "";
+  const [x, y] = coords;
+  const cellKey = coordKey(x, y);
+  const obstaculos = obstMap ?? new Map();
+  const terrenos = terrenosMap ?? new Map();
 
-  // Função auxiliar para gerar coordenadas
-  const gerarCoords = (xIni, xFim, yIni, yFim) => {
-    const arr = [];
-    for (let i = xIni; i < xFim; i++) {
-      for (let j = yIni; j < yFim; j++) {
-        arr.push([i, j]);
-      }
-    }
-    return arr;
-  };
+  const objetivoKey =
+    objetivo && objetivo.length === 2 && objetivo[0] != null
+      ? coordKey(objetivo[0], objetivo[1])
+      : null;
+  const jogadorKey =
+    jogador && jogador.length === 2 && jogador[0] != null
+      ? coordKey(jogador[0], jogador[1])
+      : null;
 
-  const rio = gerarCoords(0, 10, 0, 12);
-  const rioCastelo = [
-    ...gerarCoords(5, 10, 10, 23),
-    ...gerarCoords(5, 10, 27, 48),
-  ];
+  const blocoOcupado = STATIC_BLOCKERS.has(cellKey) || obstaculos.has(cellKey);
 
-  const caminhos = gerarCoords(5, 10, 23, 24);
-  const caminhos2 = gerarCoords(5, 10, 24, 26);
-  const caminhos3 = gerarCoords(5, 10, 26, 27);
+  let bloco = null;
+  let ponte = null;
+  let objetivoComp = null;
+  let personagem = null;
+  let casaCastelo = null;
 
-  const posicaoArvores = [
-    ...gerarCoords(0, 3, 10, 80),
-    ...gerarCoords(10, 80, 0, 3),
-  ];
-
-  const posicaoArvores3 = gerarCoords(10, 48, 3, 10);
-
-  const posicaoArvores2 = [
-    ...gerarCoords(48, 80, 0, 50),
-    ...gerarCoords(0, 50, 48, 80),
-  ];
-
-  const posicaoCastelo1 = [[4, 24]];
-  const posicaoCastelo2 = [[3, 24]];
-  const posicaoCastelo3 = [[4, 25]];
-  const posicaoCastelo4 = [[3, 25]];
-
-  const placa = [10, 22];
-
-  const todosOsObstaculos = [
-    ...obst,
-    ...posicaoArvores,
-    ...posicaoArvores2,
-    ...posicaoArvores3,
-    ...posicaoCastelo1,
-    ...posicaoCastelo2,
-    ...posicaoCastelo3,
-    ...posicaoCastelo4,
-    ...rio,
-    ...rioCastelo,
-    ...caminhos,
-    ...caminhos2,
-    ...caminhos3,
-    placa,
-  ];
-
-  const obstaculoNoCaminho = todosOsObstaculos.some(
-    (pos) => pos[0] === coords[0] && pos[1] === coords[1]
-  );
-
-  // Renderiza objetivo
-  if (
-    coords[0] === objetivo[0] &&
-    coords[1] === objetivo[1] &&
-    !obstaculoNoCaminho
-  ) {
+  if (objetivoKey && cellKey === objetivoKey && !blocoOcupado) {
     objetivoComp = <Objetivo />;
   }
 
-  // Renderiza personagem
-  if (coords[0] === jogador[0] && coords[1] === jogador[1]) {
+  if (jogadorKey && cellKey === jogadorKey) {
     personagem = <Personagem />;
 
-    if (
-      jogador[0] === objetivo[0] &&
-      jogador[1] === objetivo[1] &&
-      obstaculoNoCaminho
-    ) {
+    if (objetivoKey && jogadorKey === objetivoKey && blocoOcupado) {
       reiniciarJogo();
     }
 
-    if (
-      rio.some((pos) => pos[0] === jogador[0] && pos[1] === jogador[1]) ||
-      rioCastelo.some(
-        (pos) => pos[0] === jogador[0] && pos[1] === jogador[1]
-      )
-    ) {
+    if (DANGER_RIVER_TILES.has(jogadorKey)) {
       reiniciarJogo();
     }
   }
 
-  // Verifica obstáculos
-  const obstaculoAtual = obst.find(
-    (pos) => pos[0] === coords[0] && pos[1] === coords[1]
-  );
-
-  const LamaCapimAtual = LamaCapim.find(
-    (pos) => pos[0] === coords[0] && pos[1] === coords[1]
-  );
-
-  if (obstaculoAtual) {
-    switch (obstaculoAtual[2]) {
+  const obstaculoTipo = obstaculos.get(cellKey);
+  if (obstaculoTipo) {
+    switch (obstaculoTipo) {
       case 1:
-        bloco = <div className="arvore2" key="arvore2"></div>;
+        bloco = <div className="arvore2" key="arvore2" />;
         break;
       case 2:
-        bloco = <div className="pedra" key="pedra"></div>;
+        bloco = <div className="pedra" key="pedra" />;
+        break;
+      default:
         break;
     }
   }
 
-  if (LamaCapimAtual) {
-    switch (LamaCapimAtual[2]) {
+  const terrenoTipo = terrenos.get(cellKey);
+  if (terrenoTipo) {
+    switch (terrenoTipo) {
       case 1:
-        bloco = <div className="lama" key="lama"></div>;
+        bloco = <div className="lama" key="lama" />;
         break;
       case 2:
-        bloco = <div className="capim" key="capim"></div>;
+        bloco = <div className="capim" key="capim" />;
+        break;
+      default:
         break;
     }
   }
 
-  // Checagem de terrenos e construções
-  if (rio.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])) {
-    bloco = <div className="rio" key="rio"></div>;
-  } else if (
-    caminhos.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])
-  ) {
-    ponte = <div className="ponte1" key="ponte1"></div>;
-  } else if (
-    caminhos2.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])
-  ) {
-    ponte = <div className="ponte2" key="ponte2"></div>;
-  } else if (
-    caminhos3.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])
-  ) {
-    ponte = <div className="ponte3" key="ponte3"></div>;
-  } else if (
-    posicaoArvores.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])
-  ) {
-    bloco = <div className="arvore" key="arvore1"></div>;
-  } else if (
-    posicaoArvores2.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])
-  ) {
-    bloco = <div className="arvore" key="arvore2"></div>;
-  } else if (
-    posicaoArvores3.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])
-  ) {
-    bloco = <div className="arvore" key="arvore3"></div>;
+  if (RIVER_TILES.has(cellKey) || CASTLE_RIVER_TILES.has(cellKey)) {
+    bloco = <div className="rio" key="rio" />;
+  } else if (PATH_TILE_CLASS.has(cellKey)) {
+    const ponteClasse = PATH_TILE_CLASS.get(cellKey);
+    ponte = <div className={ponteClasse} key={ponteClasse} />;
+  } else if (TREE_TILES.has(cellKey)) {
+    bloco = <div className="arvore" key="arvore" />;
   }
 
-  if (posicaoCastelo1.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])) {
-    casaCastelo = <div className="castelo1" key="castelo1"></div>;
-  } else if (posicaoCastelo2.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])) {
-    casaCastelo = <div className="castelo2" key="castelo2"></div>;
-  } else if (posicaoCastelo3.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])) {
-    casaCastelo = <div className="castelo3" key="castelo3"></div>;
-  } else if (posicaoCastelo4.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])) {
-    casaCastelo = <div className="castelo4" key="castelo4"></div>;
+  if (CASTLE_TILES.has(cellKey)) {
+    const castleClass = CASTLE_TILES.get(cellKey);
+    casaCastelo = <div className={castleClass} key={castleClass} />;
   }
 
-  if (rioCastelo.some((pos) => pos[0] === coords[0] && pos[1] === coords[1])) {
-    bloco = <div className="rio" key="rio2"></div>;
-  }
-
-  if (placa[0] === coords[0] && placa[1] === coords[1]) {
-    bloco = <div className="placa" key="placa"></div>;
+  if (cellKey === SIGN_TILE_KEY) {
+    bloco = <div className="placa" key="placa" />;
   }
 
   return (
