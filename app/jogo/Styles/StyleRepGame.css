@@ -29,6 +29,119 @@ body {
   flex-direction: column;
   align-items: center;
   gap: clamp(24px, 4vw, 48px);
+  overflow: hidden;
+}
+
+.game__layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.game__aurora {
+  position: absolute;
+  inset: -20vh -10vw;
+  background: radial-gradient(
+      60% 60% at 30% 20%,
+      rgba(47, 190, 255, 0.24),
+      transparent 70%
+    ),
+    radial-gradient(
+      60% 60% at 70% 40%,
+      rgba(146, 86, 255, 0.26),
+      transparent 75%
+    );
+  filter: blur(32px);
+  animation: auroraDrift 14s ease-in-out infinite alternate;
+}
+
+.game__particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.game__particle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85), transparent);
+  opacity: 0.7;
+  animation: particleFloat 12s linear infinite;
+}
+
+.game__particle--1 {
+  top: 12%;
+  left: 18%;
+  animation-delay: -2s;
+}
+
+.game__particle--2 {
+  top: 32%;
+  left: 78%;
+  animation-duration: 16s;
+}
+
+.game__particle--3 {
+  top: 68%;
+  left: 12%;
+  animation-delay: -6s;
+}
+
+.game__particle--4 {
+  top: 82%;
+  left: 62%;
+  animation-duration: 18s;
+}
+
+.game__particle--5 {
+  top: 44%;
+  left: 48%;
+  animation-delay: -9s;
+}
+
+.game__particle--6 {
+  top: 20%;
+  left: 52%;
+  animation-duration: 20s;
+}
+
+.game__particle--7 {
+  top: 74%;
+  left: 82%;
+  animation-delay: -12s;
+}
+
+.game__particle--8 {
+  top: 8%;
+  left: 64%;
+  animation-duration: 22s;
+}
+
+.game__particle--9 {
+  top: 52%;
+  left: 26%;
+  animation-delay: -4s;
+}
+
+.game__particle--10 {
+  top: 88%;
+  left: 34%;
+  animation-duration: 19s;
+}
+
+.game__particle--11 {
+  top: 60%;
+  left: 70%;
+  animation-delay: -16s;
+}
+
+.game__particle--12 {
+  top: 26%;
+  left: 8%;
+  animation-duration: 17s;
 }
 
 .game::before {
@@ -85,6 +198,23 @@ body {
   font-size: clamp(15px, 2.5vw, 18px);
   color: rgba(225, 240, 255, 0.8);
   line-height: 1.6;
+}
+
+.start-panel__tips {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  width: 100%;
+  color: rgba(220, 238, 255, 0.82);
+  font-size: clamp(13px, 2vw, 15px);
+}
+
+.start-panel__tips li::before {
+  content: "✦";
+  margin-right: 8px;
+  color: #4be1ff;
 }
 
 .start-panel__button {
@@ -211,6 +341,23 @@ body {
   color: rgba(222, 240, 255, 0.86);
 }
 
+.status-panel__message--near {
+  color: #c7f2ff;
+  text-shadow: 0 0 14px rgba(97, 196, 255, 0.35);
+  transition: text-shadow 0.3s ease;
+}
+
+.status-panel__message--calm {
+  color: rgba(198, 216, 255, 0.8);
+  font-style: italic;
+}
+
+.status-panel__message--success {
+  color: #6cffdc;
+  text-shadow: 0 0 18px rgba(108, 255, 220, 0.55);
+  font-weight: 600;
+}
+
 .status-panel__warning {
   padding: 10px 14px;
   border-radius: 14px;
@@ -323,6 +470,15 @@ body {
   box-shadow: 0 18px 32px rgba(241, 187, 71, 0.5);
 }
 
+@keyframes auroraDrift {
+  from {
+    transform: translate3d(-2%, -4%, 0) scale(1.02);
+  }
+  to {
+    transform: translate3d(3%, 6%, 0) scale(1.08);
+  }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -350,6 +506,44 @@ body {
   }
   to {
     box-shadow: 0 0 18px rgba(255, 193, 84, 0.45);
+  }
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.9);
+    opacity: 0.2;
+  }
+  25% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate3d(10px, -30px, 0) scale(1.05);
+  }
+  75% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate3d(-8px, -60px, 0) scale(0.8);
+    opacity: 0.2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .start-panel,
+  .final__content,
+  .progress__fill,
+  .hud__button,
+  .start-panel__button,
+  .Celula,
+  .game__aurora,
+  .game__particle,
+  .status-panel__warning,
+  .Personagem,
+  .objetivo {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

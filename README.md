@@ -14,9 +14,9 @@ Uma aventura em React/Next.js onde o jogador precisa encontrar a Excalibur e esc
 ## Como jogar
 1. Inicie o modo desenvolvimento com `npm run dev`.
 2. Acesse `http://localhost:3000`.
-3. Clique em **Entrar** para começar.
+3. Clique em **Entrar** para começar e aproveite a nova interface com efeitos de luz.
 4. Use as setas do teclado para mover Stuart pelo labirinto.
-5. Encontre a Excalibur antes de seguir para o castelo.
+5. Colete a Excalibur brilhante, observando o painel de progresso, antes de seguir para o castelo.
 
 ## Estrutura principal
 - `app/jogo/TelaPrincipal.jsx`: controla o fluxo entre a tela inicial e o jogo.

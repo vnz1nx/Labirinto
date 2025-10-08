@@ -11,6 +11,11 @@ export default function TelaInicial({ iniciarJogo }) {
         Ajude Stuart a recuperar a Excalibur no labirinto mágico e escapar das
         armadilhas da floresta.
       </p>
+      <ul className="start-panel__tips">
+        <li>Movimente-se com as setas do teclado.</li>
+        <li>Evite rios e pedras enquanto procura a Excalibur.</li>
+        <li>Volte ao castelo quando encontrar a espada lendária.</li>
+      </ul>
       <button className="start-panel__button" onClick={iniciarJogo}>
         Iniciar aventura
       </button>

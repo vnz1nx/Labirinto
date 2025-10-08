@@ -37,6 +37,8 @@ const gerarTerrenos = () =>
     numeroAleatorio(1, 2),
   ]);
 
+const PARTICLES = Array.from({ length: 12 }, (_, index) => index);
+
 const gerarPosicaoLivre = (ocupadas = [], obstaculos = []) => {
   const ocupadasSet = new Set(ocupadas.map(([x, y]) => `${x}-${y}`));
   const obstaculosSet = new Set(obstaculos.map(([x, y]) => `${x}-${y}`));
@@ -136,6 +138,19 @@ export default function RepGame() {
       return "Continue avançando, o brilho começa a aparecer.";
     }
     return "O castelo está distante, explore com calma.";
+  }, [objetivoEncontrado, progressoObjetivo]);
+
+  const statusHighlightClass = useMemo(() => {
+    if (objetivoEncontrado) {
+      return "status-panel__message--success";
+    }
+    if (progressoObjetivo >= 70) {
+      return "status-panel__message--near";
+    }
+    if (progressoObjetivo <= 25) {
+      return "status-panel__message--calm";
+    }
+    return "";
   }, [objetivoEncontrado, progressoObjetivo]);
 
   useEffect(() => {
@@ -277,6 +292,17 @@ export default function RepGame() {
 
   return (
     <div className="game">
+      <div className="game__layer" aria-hidden="true">
+        <div className="game__aurora" />
+        <div className="game__particles">
+          {PARTICLES.map((particle) => (
+            <span
+              key={particle}
+              className={`game__particle game__particle--${(particle % 6) + 1}`}
+            />
+          ))}
+        </div>
+      </div>
       {!tela && (
         <>
           <div className="hud" role="status">
@@ -312,9 +338,13 @@ export default function RepGame() {
 
             <aside className="status-panel">
               <h2 className="status-panel__title">Diário de bordo</h2>
-              <p className="status-panel__message">{statusMessage}</p>
+              <p className={`status-panel__message ${statusHighlightClass}`}>
+                {statusMessage}
+              </p>
               {warningMessage && (
-                <p className="status-panel__warning">{warningMessage}</p>
+                <p className="status-panel__warning" aria-live="assertive">
+                  {warningMessage}
+                </p>
               )}
               <div className="progress" role="presentation">
                 <span className="progress__label">Distância até o objetivo</span>
