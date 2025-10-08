@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import "./Styles/StyleRepGame.css";
 import Tabuleiro from "./Tabuleiro";
-import TelaInicial from "./TelaInicial";
 
 const LIMITES = { minX: 3, maxX: 47, minY: 10, maxY: 47 };
 const OBSTACLE_COUNT = 160;
@@ -23,10 +22,6 @@ const MOVIMENTOS = {
   ArrowLeft: [0, -1],
   ArrowRight: [0, 1],
 };
-const MAX_DISTANCE = Math.hypot(
-  LIMITES.maxX - LIMITES.minX,
-  LIMITES.maxY - LIMITES.minY
-);
 
 const numeroAleatorio = (min, max) => {
   const inteiroMin = Math.ceil(min);
@@ -47,9 +42,6 @@ const gerarTerrenos = () =>
     numeroAleatorio(10, 47),
     numeroAleatorio(1, 2),
   ]);
-
-const PARTICLES = Array.from({ length: 12 }, (_, index) => index);
-const TIP_SIZES = ["compact", "medium", "expanded"];
 
 const gerarPosicaoLivre = (ocupadas = [], obstaculos = []) => {
   const ocupadasSet = new Set(ocupadas.map(([x, y]) => coordKey(x, y)));
@@ -192,92 +184,13 @@ export default function RepGame() {
   const [lamaCapim, setLamaCapim] = useState(setupRef.current.terrenos);
   const [player, setPlayer] = useState(setupRef.current.jogador);
   const [objetivo, setObjetivo] = useState(setupRef.current.objetivo);
-  const [mover, setMover] = useState(0);
   const [objetivoEncontrado, setObjetivoEncontrado] = useState(false);
-  const [tela, setTela] = useState(true);
   const [personagemCastelo, setPersonagemCastelo] = useState(true);
-  const [statusMessage, setStatusMessage] = useState(
-    "Use as setas do teclado para explorar a floresta."
-  );
-  const [warningMessage, setWarningMessage] = useState("");
-  const [tipsVisible, setTipsVisible] = useState(true);
-  const [tipsSizeIndex, setTipsSizeIndex] = useState(1);
 
   const obstaculosKeySet = useMemo(
     () => new Set(obst.map(([x, y]) => coordKey(x, y))),
     [obst]
   );
-
-  const distanciaObjetivo = useMemo(() => {
-    if (
-      objetivoEncontrado ||
-      objetivo[0] == null ||
-      objetivo[1] == null ||
-      player[0] == null ||
-      player[1] == null
-    ) {
-      return 0;
-    }
-
-    return Math.hypot(player[0] - objetivo[0], player[1] - objetivo[1]);
-  }, [objetivoEncontrado, objetivo, player]);
-
-  const progressoObjetivo = useMemo(() => {
-    if (objetivoEncontrado) {
-      return 100;
-    }
-
-    const progresso =
-      ((MAX_DISTANCE - Math.min(distanciaObjetivo, MAX_DISTANCE)) /
-        MAX_DISTANCE) *
-      100;
-
-    return Math.max(0, Math.min(100, Math.round(progresso)));
-  }, [distanciaObjetivo, objetivoEncontrado]);
-
-  const progressoDescricao = useMemo(() => {
-    if (objetivoEncontrado) {
-      return "Corra para o castelo!";
-    }
-    if (progressoObjetivo > 80) {
-      return "Você sente a Excalibur muito perto.";
-    }
-    if (progressoObjetivo > 55) {
-      return "Pegadas frescas indicam que o objetivo está próximo.";
-    }
-    if (progressoObjetivo > 30) {
-      return "Continue avançando, o brilho começa a aparecer.";
-    }
-    return "O castelo está distante, explore com calma.";
-  }, [objetivoEncontrado, progressoObjetivo]);
-
-  const statusHighlightClass = useMemo(() => {
-    if (objetivoEncontrado) {
-      return "floating-panel__message--success";
-    }
-    if (progressoObjetivo >= 70) {
-      return "floating-panel__message--near";
-    }
-    if (progressoObjetivo <= 25) {
-      return "floating-panel__message--calm";
-    }
-    return "";
-  }, [objetivoEncontrado, progressoObjetivo]);
-
-  useEffect(() => {
-    if (!warningMessage) {
-      return;
-    }
-
-    const timeout = setTimeout(() => setWarningMessage(""), 1800);
-    return () => clearTimeout(timeout);
-  }, [warningMessage]);
-
-  useEffect(() => {
-    if (!tela && objetivoEncontrado) {
-      setStatusMessage("Você encontrou a Excalibur! Retorne ao castelo.");
-    }
-  }, [objetivoEncontrado, tela]);
 
   const avaliarMovimento = useCallback(
     (posicaoAtual, delta) => {
@@ -296,28 +209,17 @@ export default function RepGame() {
         proximaPosicao[1] < LIMITES.minY ||
         proximaPosicao[1] > LIMITES.maxY
       ) {
-        return {
-          proximaPosicao: posicaoAtual,
-          warning: "As árvores fecham o caminho por aqui.",
-        };
+        return null;
       }
 
       if (obstaculosKeySet.has(proximaChave)) {
-        return {
-          proximaPosicao: posicaoAtual,
-          warning: "Algo bloqueia o caminho!",
-        };
+        return null;
       }
 
       const tileCastelo = CASTLE_TILE_KEYS.has(proximaChave);
 
       if (!objetivoEncontrado && tileCastelo) {
-        return {
-          proximaPosicao: posicaoAtual,
-          warning: "Encontre a Excalibur antes de entrar no castelo!",
-          status:
-            "Continue explorando a floresta para achar a espada lendária.",
-        };
+        return null;
       }
 
       const encontrouObjetivo =
@@ -335,9 +237,25 @@ export default function RepGame() {
     [objetivoEncontrado, objetivo, obstaculosKeySet]
   );
 
+  const reiniciarJogo = useCallback(() => {
+    const novoCenario = criarNovoCenario();
+
+    setObst(novoCenario.obstaculos);
+    setLamaCapim(novoCenario.terrenos);
+    setObjetivo(novoCenario.objetivo);
+    setPlayer(novoCenario.jogador);
+    setObjetivoEncontrado(false);
+    setPersonagemCastelo(true);
+    setupRef.current = novoCenario;
+  }, []);
+
   const handleKeyDown = useCallback(
     (event) => {
-      if (tela || !personagemCastelo) {
+      if (!personagemCastelo) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          reiniciarJogo();
+        }
         return;
       }
 
@@ -352,32 +270,23 @@ export default function RepGame() {
       setPlayer((posicaoAtual) => {
         const resultado = avaliarMovimento(posicaoAtual, delta);
 
-        if (resultado.warning) {
-          setWarningMessage(resultado.warning);
-          if (resultado.status) {
-            setStatusMessage(resultado.status);
-          }
+        if (!resultado) {
           return posicaoAtual;
         }
-
-        setWarningMessage("");
-        setMover((prev) => prev + 1);
 
         if (resultado.encontrouObjetivo) {
           setObjetivoEncontrado(true);
           setObjetivo([null, null]);
-          setStatusMessage("Você encontrou a Excalibur! Retorne ao castelo.");
         }
 
         if (resultado.entrouNoCastelo) {
           setPersonagemCastelo(false);
-          setStatusMessage("Missão cumprida! Stuart chegou ao castelo.");
         }
 
         return resultado.proximaPosicao ?? posicaoAtual;
       });
     },
-    [tela, personagemCastelo, avaliarMovimento]
+    [avaliarMovimento, personagemCastelo, reiniciarJogo]
   );
 
   useEffect(() => {
@@ -387,157 +296,30 @@ export default function RepGame() {
     };
   }, [handleKeyDown]);
 
-  const reiniciarJogo = useCallback(() => {
-    const novoCenario = criarNovoCenario();
-
-    setObst(novoCenario.obstaculos);
-    setLamaCapim(novoCenario.terrenos);
-    setObjetivo(novoCenario.objetivo);
-    setPlayer(novoCenario.jogador);
-    setPersonagemCastelo(true);
-    setObjetivoEncontrado(false);
-    setMover(0);
-    setStatusMessage("Use as setas do teclado para explorar a floresta.");
-    setWarningMessage("");
-    setupRef.current = novoCenario;
-  }, []);
-
-  const iniciarAventura = useCallback(() => {
-    reiniciarJogo();
-    setTela(false);
-  }, [reiniciarJogo]);
-
-  const toggleTipsVisibility = useCallback(() => {
-    setTipsVisible((prev) => !prev);
-  }, []);
-
-  const cycleTipsSize = useCallback(() => {
-    setTipsSizeIndex((prev) => (prev + 1) % TIP_SIZES.length);
-  }, []);
-
-  const tipsSize = TIP_SIZES[tipsSizeIndex];
-
   return (
     <div className="game">
-      <div className="game__layer" aria-hidden="true">
-        <div className="game__aurora" />
-        <div className="game__particles">
-          {PARTICLES.map((particle) => (
-            <span
-              key={particle}
-              className={`game__particle game__particle--${(particle % 6) + 1}`}
-            />
-          ))}
-        </div>
+      <div className="game__stage">
+        <Tabuleiro
+          jogador={player}
+          obj={objetivo}
+          obst={obst}
+          reiniciarJogo={reiniciarJogo}
+          LamaCapim={lamaCapim}
+        />
       </div>
-      {!tela && (
-        <>
-          <div className="hud" role="status">
-            <div className="hud__stat">
-              <span className="hud__label">Movimentos</span>
-              <span className="hud__value">{mover}</span>
-            </div>
-            <div className="hud__stat">
-              <span className="hud__label">Objetivo</span>
-              <span
-                className={`hud__value ${
-                  objetivoEncontrado ? "hud__value--success" : ""
-                }`}
-              >
-                {objetivoEncontrado ? "Encontrado" : "Perdido"}
-              </span>
-            </div>
-            <button className="hud__button" onClick={reiniciarJogo}>
-              Reiniciar aventura
-            </button>
-          </div>
 
-          <div className="game__stage">
-            <div className="board-wrapper">
-              <Tabuleiro
-                jogador={player}
-                obj={objetivo}
-                obst={obst}
-                reiniciarJogo={reiniciarJogo}
-                LamaCapim={lamaCapim}
-              />
-            </div>
-          </div>
-
-          {tipsVisible ? (
-            <aside
-              className={`floating-panel floating-panel--${tipsSize}`}
-              role="complementary"
-              aria-label="Diário de bordo e instruções"
-            >
-              <div className="floating-panel__header">
-                <h2 className="floating-panel__title">Diário de bordo</h2>
-                <div className="floating-panel__actions">
-                  <button
-                    type="button"
-                    className="floating-panel__action"
-                    onClick={cycleTipsSize}
-                  >
-                    Ajustar tamanho
-                  </button>
-                  <button
-                    type="button"
-                    className="floating-panel__action"
-                    onClick={toggleTipsVisibility}
-                    aria-label="Ocultar instruções"
-                  >
-                    Ocultar
-                  </button>
-                </div>
-              </div>
-              <p className={`floating-panel__message ${statusHighlightClass}`}>
-                {statusMessage}
-              </p>
-              {warningMessage && (
-                <p className="floating-panel__warning" aria-live="assertive">
-                  {warningMessage}
-                </p>
-              )}
-              <div className="floating-panel__progress" role="presentation">
-                <span className="floating-panel__label">
-                  Distância até o objetivo
-                </span>
-                <div className="floating-panel__track" aria-hidden="true">
-                  <div
-                    className="floating-panel__fill"
-                    style={{ width: `${progressoObjetivo}%` }}
-                  />
-                </div>
-                <span className="floating-panel__hint">{progressoDescricao}</span>
-              </div>
-              <ul className="floating-panel__tips">
-                <li>Use as teclas direcionais para mover Stuart.</li>
-                <li>Evite rios, lama e pedras para não recomeçar.</li>
-                <li>Leve a Excalibur até o castelo para vencer.</li>
-              </ul>
-            </aside>
-          ) : (
+      {!personagemCastelo && (
+        <div className="game__overlay" role="dialog" aria-live="assertive">
+          <div className="game__overlay-card">
+            <h1 className="game__overlay-title">Missão cumprida!</h1>
+            <p className="game__overlay-text">
+              Pressione Enter ou clique para jogar novamente.
+            </p>
             <button
               type="button"
-              className="floating-panel__toggle"
-              onClick={toggleTipsVisibility}
+              className="game__overlay-button"
+              onClick={reiniciarJogo}
             >
-              Mostrar instruções
-            </button>
-          )}
-        </>
-      )}
-
-      {tela && <TelaInicial iniciarJogo={iniciarAventura} />}
-
-      {!tela && !personagemCastelo && (
-        <div className="final" role="dialog" aria-live="assertive">
-          <div className="final__content">
-            <h1 className="final__title">Parabéns! Você chegou ao castelo.</h1>
-            <p className="final__subtitle">
-              Stuart está salvo graças ao seu caminho certeiro.
-            </p>
-            <button className="final__button" onClick={reiniciarJogo}>
               Jogar novamente
             </button>
           </div>

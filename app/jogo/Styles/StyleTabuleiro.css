@@ -1,36 +1,24 @@
 .board {
   --board-columns: 21;
-  --board-padding: clamp(18px, 2.5vw, 32px);
-  --board-width: var(--board-available-width, calc(100vw - 64px));
+  --board-padding: clamp(12px, 2.2vw, 28px);
+  --board-width: var(--board-available-width, min(92vmin, 1100px));
   --cell-size: min(
-    64px,
+    68px,
     calc((var(--board-width) - var(--board-padding)) / var(--board-columns))
   );
-  --cell-height: calc(var(--cell-size) * 1.16);
-  width: 100%;
-  max-width: 100%;
-  display: inline-flex;
+  --cell-height: calc(var(--cell-size) * 1.05);
+  width: min(var(--board-width), 100%);
+  display: flex;
   flex-direction: column;
   gap: 0;
   padding: calc(var(--board-padding) / 2);
-  border-radius: 24px;
-  border: 3px solid rgba(84, 56, 12, 0.65);
-  background: linear-gradient(145deg, rgba(18, 44, 32, 0.95), rgba(9, 24, 17, 0.92));
-  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
-  image-rendering: pixelated;
-  backdrop-filter: blur(2px);
-  animation: boardGlow 6s ease-in-out infinite alternate;
+  border-radius: 22px;
+  border: 2px solid rgba(40, 104, 82, 0.65);
+  background: linear-gradient(165deg, rgba(8, 24, 16, 0.94), rgba(4, 12, 9, 0.92));
+  box-shadow: 0 26px 48px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
 }
 
 .board__row {
   display: flex;
-}
-
-@keyframes boardGlow {
-  0% {
-    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
-  }
-  100% {
-    box-shadow: 0 22px 45px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(87, 206, 255, 0.15);
-  }
 }
