@@ -20,7 +20,7 @@ body {
 }
 
 /* Container principal */
-.conteiner {
+.container {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -121,7 +121,7 @@ body {
   }
 }
 @media (max-width: 480px) {
-  .conteiner {
+  .container {
     width: 90%;
     max-width: 300px;
     min-height: auto;

@@ -1,19 +1,46 @@
 .Personagem {
+  width: calc(var(--cell-size) * 0.9);
+  height: calc(var(--cell-size) * 1.05);
   background-image: url(Imagens/perso.gif);
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
-  z-index: 1;
-  width: 50px;
-  height: 50px;
+  background-position: center bottom;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 9px 14px rgba(12, 18, 14, 0.35));
+  animation: heroPulse 1.6s ease-in-out infinite alternate;
+  z-index: 6;
+  will-change: transform;
 }
 
 .objetivo {
+  width: calc(var(--cell-size) * 0.74);
+  height: calc(var(--cell-size) * 1.1);
   background-image: url(Imagens/objetivo.png);
   background-size: contain;
   background-repeat: no-repeat;
-  z-index: 1;
-  width: 50px;
-  height: 70px;
-  filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
-  animation: bounce 1s infinite;
+  background-position: center bottom;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 12px 16px rgba(8, 14, 10, 0.32));
+  animation: bounce 1.1s ease-in-out infinite;
+  z-index: 5;
+  will-change: transform;
+}
+
+@keyframes heroPulse {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2px) scale(1.04);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }

@@ -1,128 +1,158 @@
 .Celula {
   position: relative;
-  height: 50px;
-  width: 43px;
-  align-items: center;
+  width: var(--cell-size);
+  height: calc(var(--cell-size) * 1.04);
+  display: flex;
+  align-items: flex-end;
   justify-content: center;
+  flex-shrink: 0;
+}
+
+.Celula::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--cell-size) * 0.06);
+  border-radius: calc(var(--cell-size) * 0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(12, 24, 12, 0.75) 0%,
+    rgba(8, 18, 12, 0.92) 45%,
+    rgba(6, 12, 10, 0.94) 100%
+  );
+  box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.36),
+    0 10px 14px rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .Celula > * {
   position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  image-rendering: pixelated;
+  transition: transform 0.24s ease, filter 0.24s ease;
+}
+
+.Celula > .rio,
+.Celula > .lama,
+.Celula > .ponte1,
+.Celula > .ponte2,
+.Celula > .ponte3 {
+  left: 0;
+  bottom: 0;
+  transform: none;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  transition: none;
+}
+
+.Celula > .rio,
+.Celula > .lama {
+  border-radius: calc(var(--cell-size) * 0.12);
+  box-shadow: inset 0 4px 9px rgba(0, 0, 0, 0.2);
+}
+
+.Celula > .rio {
+  z-index: 0;
+}
+
+.Celula > .lama {
   z-index: 1;
 }
 
-.Celula > .caminho {
-  z-index: 0;
+.Celula > .ponte1,
+.Celula > .ponte2,
+.Celula > .ponte3 {
+  z-index: 2;
 }
+
 .arvore {
   background-image: url(Imagens/arvorenatal.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  width: 50px;
-  height: 80px;
+  width: calc(var(--cell-size) * 1.4);
+  height: calc(var(--cell-size) * 1.85);
+  bottom: calc(var(--cell-size) * -0.18);
+  z-index: 4;
+  filter: drop-shadow(0 10px 14px rgba(15, 20, 12, 0.36));
 }
+
 .arvore2 {
   background-image: url(Imagens/arvorenormal.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  width: 200px;
-  height: 100px;
+  width: calc(var(--cell-size) * 1.2);
+  height: calc(var(--cell-size) * 1.55);
+  bottom: calc(var(--cell-size) * -0.12);
+  z-index: 4;
+  filter: drop-shadow(0 9px 12px rgba(20, 24, 16, 0.34));
 }
+
 .capim {
   background-image: url(Imagens/capim.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  z-index: 2;
-  width: 50px;
-  height: 70px;
+  width: calc(var(--cell-size) * 0.9);
+  height: calc(var(--cell-size) * 0.78);
+  bottom: calc(var(--cell-size) * 0.02);
+  z-index: 3;
 }
+
 .pedra {
-  border-radius: 20%;
   background-image: url(Imagens/pedra.png);
-  background-size: cover;
-  width: 70px;
-  height: 70px;
+  width: calc(var(--cell-size) * 0.92);
+  height: calc(var(--cell-size) * 0.68);
+  bottom: calc(var(--cell-size) * 0.03);
+  z-index: 3;
 }
+
 .lama {
-  border-radius: 25%;
   background-image: url(Imagens/lama.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  z-index: 0;
-  width: 50px;
-  height: 70px;
+  background-size: cover;
 }
+
 .rio {
-  border-radius: 0% 0% 10% 0%;
   background-image: url(Imagens/agua.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  z-index: 1;
-  width: 50px;
-  height: 70px;
+  background-size: cover;
 }
+
+.castelo1,
+.castelo2,
+.castelo3,
+.castelo4 {
+  width: calc(var(--cell-size) * 1.45);
+  height: calc(var(--cell-size) * 1.72);
+  bottom: calc(var(--cell-size) * -0.08);
+  z-index: 5;
+  filter: drop-shadow(0 12px 16px rgba(16, 18, 12, 0.38));
+}
+
 .castelo1 {
   background-image: url(Imagens/castelo1.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  top: 4px;
-  width: 50px;
-  height: 70px;
 }
+
 .castelo2 {
   background-image: url(Imagens/castelo2.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  right: -10px;
-  width: 50px;
-  height: 70px;
 }
+
 .castelo3 {
   background-image: url(Imagens/castelo3.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  top: 4px;
-  width: 50px;
-  height: 70px;
 }
+
 .castelo4 {
   background-image: url(Imagens/castelo4.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  right: -8px;
-  width: 50px;
-  height: 100px;
-}
-.ponte1 {
-  background-image: url(Imagens/ponte1.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  width: 50px;
-  height: 70px;
-  z-index: 0;
-}
-.ponte3 {
-  background-image: url(Imagens/ponte2.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  width: 50px;
-  height: 70px;
-  z-index: 0;
-}
-.ponte2 {
-  background-image: url(Imagens/ponte3.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  width: 50px;
-  height: 70px;
-  z-index: 0;
 }
 
 .placa {
   background-image: url(Imagens/placa.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  width: 50px;
-  height: 70px;
-  z-index: 0;
+  width: calc(var(--cell-size) * 0.78);
+  height: calc(var(--cell-size) * 0.92);
+  bottom: calc(var(--cell-size) * 0.08);
+  z-index: 4;
+}
+
+@media (max-width: 900px) {
+  .Celula::before {
+    inset: calc(var(--cell-size) * 0.08);
+  }
 }
