@@ -20,6 +20,11 @@ import {
 
 const LIMITES = { minX: 3, maxX: 47, minY: 10, maxY: 47 };
 const OBSTACLE_COUNT = 160;
+const CENTRO_JOGADOR = [
+  Math.floor((LIMITES.minX + LIMITES.maxX) / 2),
+  Math.floor((LIMITES.minY + LIMITES.maxY) / 2),
+];
+const CENTRO_CHAVE = coordKey(CENTRO_JOGADOR[0], CENTRO_JOGADOR[1]);
 const DIRECOES = [
   [-1, 0],
   [1, 0],
@@ -45,7 +50,10 @@ const gerarObstaculos = () =>
     numeroAleatorio(15, 47),
     numeroAleatorio(10, 47),
     numeroAleatorio(1, 2),
-  ]);
+  ]).filter(([x, y]) => {
+    const chave = coordKey(x, y);
+    return !CASTLE_TILE_KEYS.has(chave) && chave !== CENTRO_CHAVE;
+  });
 
 const gerarTerrenos = () =>
   Array.from({ length: 50 }, () => [
@@ -262,11 +270,11 @@ const criarNovoCenario = () => {
   for (let tentativa = 0; tentativa < MAX_TENTATIVAS_CENARIO; tentativa++) {
     const obstaculosIniciais = gerarObstaculos();
     const terrenosIniciais = gerarTerrenos();
-    const objetivoInicial = gerarPosicaoLivre([], obstaculosIniciais);
-    const jogadorInicial = gerarPosicaoLivre(
-      [objetivoInicial],
+    const objetivoInicial = gerarPosicaoLivre(
+      [CENTRO_JOGADOR],
       obstaculosIniciais
     );
+    const jogadorInicial = [...CENTRO_JOGADOR];
 
     const caminhoParaObjetivo = encontrarCaminhoLivre(
       jogadorInicial,
@@ -302,11 +310,11 @@ const criarNovoCenario = () => {
   );
 
   const fallbackObstaculos = [];
-  const fallbackObjetivo = gerarPosicaoLivre([], fallbackObstaculos);
-  const fallbackJogador = gerarPosicaoLivre(
-    [fallbackObjetivo],
+  const fallbackObjetivo = gerarPosicaoLivre(
+    [CENTRO_JOGADOR],
     fallbackObstaculos
   );
+  const fallbackJogador = [...CENTRO_JOGADOR];
 
   return {
     obstaculos: fallbackObstaculos,

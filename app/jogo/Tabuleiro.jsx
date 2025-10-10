@@ -14,7 +14,7 @@ const toTileMap = (tiles = []) => {
 export default function Tabuleiro({ jogador, obj, obst, LamaCapim }) {
   const [visao, setVisao] = useState([]);
   const tamanhoMapa = 80;
-  const raioVisao = 10;
+  const raioVisao = 7;
 
   const obstaculosMap = useMemo(() => toTileMap(obst), [obst]);
   const terrenosMap = useMemo(() => toTileMap(LamaCapim), [LamaCapim]);
@@ -61,7 +61,7 @@ export default function Tabuleiro({ jogador, obj, obst, LamaCapim }) {
   }, [jogador, centralizarVisao]);
 
   return (
-    <div className="container">
+    <div className="board-container">
       {visao.map((linha, i) => (
         <div key={i} className="mostralinha">
           {linha.map(([x, y]) => (

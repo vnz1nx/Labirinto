@@ -5,7 +5,7 @@
 }
 
 :root {
-  --cell-size: clamp(40px, 1.6vw + 36px, 58px);
+  --cell-size: clamp(34px, 1.1vw + 30px, 48px);
   --accent-emerald: rgba(96, 186, 140, 0.55);
   --accent-cyan: rgba(92, 189, 230, 0.45);
   --board-border: rgba(31, 43, 26, 0.9);
@@ -28,7 +28,7 @@
   --backdrop-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23noise)' opacity='0.32'/%3E%3C/svg%3E");
 }
 
-body {
+body.body--game {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -40,7 +40,7 @@ body {
   overflow-x: hidden;
 }
 
-body::before {
+body.body--game::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -52,7 +52,7 @@ body::before {
   z-index: -1;
 }
 
-body::after {
+body.body--game::after {
   content: "";
   position: fixed;
   inset: 0;
@@ -185,7 +185,7 @@ body::after {
 
 @media (max-width: 900px) {
   :root {
-    --cell-size: clamp(40px, 7vw, 60px);
+    --cell-size: clamp(34px, 6vw, 52px);
   }
 
   .game {

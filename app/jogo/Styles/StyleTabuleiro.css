@@ -1,4 +1,4 @@
-.container {
+.board-container {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -18,7 +18,7 @@
   overflow: hidden;
 }
 
-.container::before {
+.board-container::before {
   content: "";
   position: absolute;
   inset: calc(var(--cell-size) * 0.18);
@@ -29,7 +29,7 @@
   mix-blend-mode: screen;
 }
 
-.container::after {
+.board-container::after {
   content: "";
   position: absolute;
   inset: calc(var(--cell-size) * -0.16);
@@ -50,13 +50,13 @@
 }
 
 @media (max-width: 900px) {
-  .container {
+  .board-container {
     border-width: 3px;
     border-radius: 24px;
     padding: calc(var(--cell-size) * 0.36);
   }
 
-  .container::before {
+  .board-container::before {
     inset: calc(var(--cell-size) * 0.14);
     border-radius: 18px;
   }

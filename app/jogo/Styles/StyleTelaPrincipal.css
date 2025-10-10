@@ -5,22 +5,21 @@
   box-sizing: border-box;
 }
 
-/* Fundo */
-body {
-  background-image: url('Imagens/imagemCastelo.PNG');
+body.body--start {
+  background-image: url("Imagens/imagemCastelo.PNG");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   image-rendering: pixelated;
-  font-family: 'Courier New', Courier, monospace;
-  height: 100vh;
+  font-family: "Courier New", Courier, monospace;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 32px;
 }
 
-/* Container principal */
-.container {
+.start-screen {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -31,8 +30,8 @@ body {
   background: rgba(255, 255, 255, 0.85);
   border-radius: 16px;
   padding: 35px 25px;
-  width: 340px;
-  height: 420px;
+  width: min(360px, 90vw);
+  min-height: 420px;
 
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(8px);
@@ -50,8 +49,7 @@ body {
   }
 }
 
-/* Título do jogo */
-.tituloJogo {
+.start-screen__title {
   font-size: 22px;
   color: #2c2c2c;
   margin-top: 120px;
@@ -73,8 +71,7 @@ body {
   }
 }
 
-/* Botão entrar */
-.linkjogo {
+.start-screen__button {
   width: 150px;
   height: 50px;
   background: linear-gradient(135deg, #2fb4d9, #1a92b8);
@@ -90,14 +87,13 @@ body {
   margin-top: auto;
 }
 
-.linkjogo:hover {
+.start-screen__button:hover {
   background: linear-gradient(135deg, #23d3f1, #1e9ec7);
   transform: scale(1.07);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
-/* Personagem */
-.personagem {
+.start-screen__hero {
   width: 100px;
   height: 100px;
   background-image: url('Imagens/perso.gif');
@@ -121,7 +117,7 @@ body {
   }
 }
 @media (max-width: 480px) {
-  .container {
+  .start-screen {
     width: 90%;
     max-width: 300px;
     min-height: auto;
@@ -135,7 +131,7 @@ body {
   }
 
   /* Personagem agora segue o fluxo normal */
-  .personagem {
+  .start-screen__hero {
     position: static;
     transform: none;
     width: 70px;
@@ -143,14 +139,14 @@ body {
     animation: float 2s ease-in-out infinite;
   }
 
-  .tituloJogo {
+  .start-screen__title {
     font-size: 16px;
     margin: 0;
     line-height: 1.4;
     text-align: center;
   }
 
-  .linkjogo {
+  .start-screen__button {
     width: 100%;
     max-width: 200px;
     height: 45px;
