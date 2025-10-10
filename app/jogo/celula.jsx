@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Objetivo from "./Obj_Perso/Objetivo";
 import Personagem from "./Obj_Perso/Personagem";
 import "./Styles/StyleCelula.css";
@@ -12,26 +13,12 @@ import {
   coordKey,
 } from "./mapTiles";
 
-export default function Celula({
-  coords,
-  jogador,
-  objetivo,
-  obstMap,
-  terrenosMap,
-}) {
-  const [x, y] = coords;
-  const cellKey = coordKey(x, y);
-  const obstaculos = obstMap ?? new Map();
-  const terrenos = terrenosMap ?? new Map();
+const EMPTY_MAP = new Map();
 
-  const objetivoKey =
-    objetivo && objetivo.length === 2 && objetivo[0] != null
-      ? coordKey(objetivo[0], objetivo[1])
-      : null;
-  const jogadorKey =
-    jogador && jogador.length === 2 && jogador[0] != null
-      ? coordKey(jogador[0], jogador[1])
-      : null;
+function Celula({ x, y, jogadorKey, objetivoKey, obstMap, terrenosMap }) {
+  const cellKey = coordKey(x, y);
+  const obstaculos = obstMap ?? EMPTY_MAP;
+  const terrenos = terrenosMap ?? EMPTY_MAP;
 
   const blocoOcupado = STATIC_BLOCKERS.has(cellKey) || obstaculos.has(cellKey);
 
@@ -105,3 +92,16 @@ export default function Celula({
     </div>
   );
 }
+
+const areEqual = (prevProps, nextProps) => {
+  return (
+    prevProps.x === nextProps.x &&
+    prevProps.y === nextProps.y &&
+    prevProps.jogadorKey === nextProps.jogadorKey &&
+    prevProps.objetivoKey === nextProps.objetivoKey &&
+    prevProps.obstMap === nextProps.obstMap &&
+    prevProps.terrenosMap === nextProps.terrenosMap
+  );
+};
+
+export default memo(Celula, areEqual);

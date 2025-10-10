@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import "./Styles/StyleRepGame.css";
 import Tabuleiro from "./Tabuleiro";
 import {
@@ -312,6 +318,8 @@ const criarNovoCenario = () => {
 
 export default function RepGame() {
   const setupRef = useRef(null);
+  const pendingMoveRef = useRef(null);
+  const rafRef = useRef(null);
 
   if (!setupRef.current) {
     setupRef.current = criarNovoCenario();
@@ -394,6 +402,54 @@ export default function RepGame() {
     setupRef.current = novoCenario;
   }, []);
 
+  const flushPendingMove = useCallback(() => {
+    rafRef.current = null;
+    const pendingKey = pendingMoveRef.current;
+    pendingMoveRef.current = null;
+
+    if (!pendingKey) {
+      return;
+    }
+
+    const delta = MOVIMENTOS[pendingKey];
+
+    if (!delta) {
+      return;
+    }
+
+    setPlayer((posicaoAtual) => {
+      const resultado = avaliarMovimento(posicaoAtual, delta);
+
+      if (!resultado) {
+        return posicaoAtual;
+      }
+
+      if (resultado.encontrouObjetivo) {
+        setObjetivoEncontrado(true);
+        setObjetivo([null, null]);
+      }
+
+      if (resultado.entrouNoCastelo) {
+        setPersonagemCastelo(false);
+      }
+
+      return resultado.proximaPosicao ?? posicaoAtual;
+    });
+  }, [avaliarMovimento]);
+
+  const scheduleMove = useCallback(
+    (key) => {
+      pendingMoveRef.current = key;
+
+      if (rafRef.current == null) {
+        rafRef.current = requestAnimationFrame(() => {
+          flushPendingMove();
+        });
+      }
+    },
+    [flushPendingMove]
+  );
+
   const handleKeyDown = useCallback(
     (event) => {
       if (!personagemCastelo) {
@@ -411,33 +467,22 @@ export default function RepGame() {
       }
 
       event.preventDefault();
-
-      setPlayer((posicaoAtual) => {
-        const resultado = avaliarMovimento(posicaoAtual, delta);
-
-        if (!resultado) {
-          return posicaoAtual;
-        }
-
-        if (resultado.encontrouObjetivo) {
-          setObjetivoEncontrado(true);
-          setObjetivo([null, null]);
-        }
-
-        if (resultado.entrouNoCastelo) {
-          setPersonagemCastelo(false);
-        }
-
-        return resultado.proximaPosicao ?? posicaoAtual;
-      });
+      scheduleMove(event.key);
     },
-    [avaliarMovimento, personagemCastelo, reiniciarJogo]
+    [personagemCastelo, reiniciarJogo, scheduleMove]
   );
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+
+      if (rafRef.current != null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+
+      pendingMoveRef.current = null;
+      rafRef.current = null;
     };
   }, [handleKeyDown]);
 
