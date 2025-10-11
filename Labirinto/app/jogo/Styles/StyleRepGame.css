@@ -20,8 +20,8 @@
 }
 
 .game::before {
-  width: 100vmin;
-  height: 80vmin;
+  width: 60vmin;
+  height: 60vmin;
   background: rgba(255, 214, 102, 0.35);
   top: -20vmin;
   left: -10vmin;

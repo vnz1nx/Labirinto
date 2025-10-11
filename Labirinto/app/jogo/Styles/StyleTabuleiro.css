@@ -6,15 +6,12 @@ body {
 
 :root {
   --board-columns: 50;
-  --base-cell-size: 20px;
-  --base-cell-size: clamp(30px, 5vmin, 60px);
+  --base-cell-size: 50px;
 }
 
 .container {
-  --board-horizontal-limit: max(0px, calc(100vw - 32px));
+  --board-horizontal-limit: max(0px, calc(100vw - 120px));
   --board-vertical-limit: max(0px, calc(100vh - 120px));
-  --board-horizontal-limit: max(0px, calc(100vw - 20px));
-  --board-vertical-limit: max(0px, calc(100vh - 40px));
   --cell-size: min(
     var(--base-cell-size),
     calc(var(--board-horizontal-limit) / var(--board-columns)),
