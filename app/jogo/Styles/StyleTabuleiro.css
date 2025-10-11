@@ -11,7 +11,7 @@ body {
 
 .container {
   --board-horizontal-limit: max(0px, calc(100vw - 32px));
-  --board-vertical-limit: max(0px, calc(100vh - 160px));
+  --board-vertical-limit: max(0px, calc(100vh - 120px));
   --cell-size: min(
     var(--base-cell-size),
     calc(var(--board-horizontal-limit) / var(--board-columns)),
