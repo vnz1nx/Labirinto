@@ -4,14 +4,29 @@ body {
   margin: 0;
 }
 
+:root {
+  --board-columns: 50;
+  --base-cell-size: 20px;
+}
+
 .container {
-  width: max-content;
-  margin: auto;
+  --board-horizontal-limit: max(0px, calc(100vw - 32px));
+  --board-vertical-limit: max(0px, calc(100vh - 160px));
+  --cell-size: min(
+    var(--base-cell-size),
+    calc(var(--board-horizontal-limit) / var(--board-columns)),
+    calc(var(--board-vertical-limit) / var(--board-columns))
+  );
+  width: calc(var(--cell-size) * var(--board-columns));
+  height: calc(var(--cell-size) * var(--board-columns));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .mostralinha {
   display: flex;
   flex-direction: row;
   background-image: url(Imagens/grass.png);
-  width: max-content;
+  background-size: var(--cell-size) var(--cell-size);
 }
