@@ -2,7 +2,15 @@ import Objetivo from "./Objetivo";
 import Personagem from "./Personagem";
 import "./Styles/StyleCelula.css";
 
-export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaCapim,}) {
+export default function Celula({
+  coords,
+  jogador,
+  objetivo,
+  obst,
+  reiniciarJogo,
+  LamaCapim,
+  focusRef,
+}) {
   let bloco = "";
   let ponte = "";
   let obj = "";
@@ -145,8 +153,15 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
     bloco = <div className="placa" key="placa"></div>;
   }
 
+  const isPlayerCell = coords[0] === jogador[0] && coords[1] === jogador[1];
+
   return (
-    <div className="Celula">
+    <div
+      className="Celula"
+      ref={focusRef}
+      tabIndex={isPlayerCell ? -1 : undefined}
+      aria-label={isPlayerCell ? "Posição atual do jogador" : undefined}
+    >
       {bloco}
       {ponte}
       {casaCastelo}

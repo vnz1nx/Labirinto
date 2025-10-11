@@ -24,6 +24,26 @@ body {
   flex-direction: column;
 }
 
+.tabuleiro-scroll {
+  --board-horizontal-limit: max(0px, calc(100vw - 32px));
+  --board-vertical-limit: max(0px, calc(100vh - 120px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-radius: 28px;
+  background: rgba(6, 10, 18, 0.55);
+  box-shadow: 0 18px 38px rgba(3, 6, 12, 0.6);
+  overflow: auto;
+  max-width: var(--board-horizontal-limit);
+  max-height: var(--board-vertical-limit);
+  backdrop-filter: blur(6px);
+}
+
+.tabuleiro-scroll:focus-within {
+  box-shadow: 0 18px 42px rgba(18, 120, 255, 0.35);
+}
+
 .mostralinha {
   display: flex;
   flex-direction: row;

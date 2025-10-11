@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./Styles/StyleRepGame.css";
 import Tabuleiro from "./Tabuleiro";
 import {
@@ -30,6 +30,8 @@ export default function RepGame() {
   const [gameStatus, setGameStatus] = useState(INITIAL_GAME_STATUS);
   const [seed, setSeed] = useState(0);
   const [showGateWarning, setShowGateWarning] = useState(false);
+  const boardContainerRef = useRef(null);
+  const playerCellRef = useRef(null);
 
   useEffect(() => {
     const forbidden = new Set();
@@ -92,6 +94,35 @@ export default function RepGame() {
     setPlayer(null);
     setSeed((value) => value + 1);
   }, []);
+
+  useEffect(() => {
+    if (!player) {
+      return;
+    }
+
+    const container = boardContainerRef.current;
+    const cell = playerCellRef.current;
+
+    if (!container || !cell) {
+      return;
+    }
+
+    const containerRect = container.getBoundingClientRect();
+    const cellRect = cell.getBoundingClientRect();
+
+    const offsetTop = cellRect.top - containerRect.top + container.scrollTop;
+    const offsetLeft = cellRect.left - containerRect.left + container.scrollLeft;
+
+    container.scrollTo({
+      top: offsetTop - container.clientHeight / 2 + cell.offsetHeight / 2,
+      left: offsetLeft - container.clientWidth / 2 + cell.offsetWidth / 2,
+      behavior: "smooth",
+    });
+
+    if (typeof cell.focus === "function") {
+      cell.focus({ preventScroll: true });
+    }
+  }, [player]);
 
   useEffect(() => {
     if (!showGateWarning) {
@@ -199,6 +230,8 @@ export default function RepGame() {
           obst={obstacles}
           reiniciarJogo={reiniciarJogo}
           LamaCapim={lamaCapim}
+          boardRef={boardContainerRef}
+          playerCellRef={playerCellRef}
         />
       )}
 

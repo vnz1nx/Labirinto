@@ -9,6 +9,8 @@ export default function Tabuleiro({
   obst,
   reiniciarJogo,
   LamaCapim,
+  boardRef,
+  playerCellRef,
 }) {
   const [celula, setCelula] = useState(
     Array(50)
@@ -17,23 +19,28 @@ export default function Tabuleiro({
   );
 
   return (
-    <div className="container">
-      {celula.map((linha, i) => {
-        const temp = linha.map((coluna, j) => {
-          return (
-            <Celula
-              key={`${i}-${j}`}
-              coords={[i, j]}
-              jogador={jogador}
-              objetivo={obj}
-              obst={obst}
-              reiniciarJogo={reiniciarJogo}
-              LamaCapim={LamaCapim}
-            />
-          );
-        });
-        return <div key={i} className="mostralinha">{temp}</div>;
-      })}
+    <div className="tabuleiro-scroll" ref={boardRef}>
+      <div className="container">
+        {celula.map((linha, i) => {
+          const temp = linha.map((coluna, j) => {
+            const isPlayerCell = jogador[0] === i && jogador[1] === j;
+
+            return (
+              <Celula
+                key={`${i}-${j}`}
+                coords={[i, j]}
+                jogador={jogador}
+                objetivo={obj}
+                obst={obst}
+                reiniciarJogo={reiniciarJogo}
+                LamaCapim={LamaCapim}
+                focusRef={isPlayerCell ? playerCellRef : undefined}
+              />
+            );
+          });
+          return <div key={i} className="mostralinha">{temp}</div>;
+        })}
+      </div>
     </div>
   );
 }
