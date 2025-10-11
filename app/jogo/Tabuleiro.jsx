@@ -17,23 +17,25 @@ export default function Tabuleiro({
   );
 
   return (
-    <div className="container">
-      {celula.map((linha, i) => {
-        const temp = linha.map((coluna, j) => {
-          return (
-            <Celula
-              key={`${i}-${j}`}
-              coords={[i, j]}
-              jogador={jogador}
-              objetivo={obj}
-              obst={obst}
-              reiniciarJogo={reiniciarJogo}
-              LamaCapim={LamaCapim}
-            />
-          );
-        });
-        return <div key={i} className="mostralinha">{temp}</div>;
-      })}
+    <div className="board-scroll-container">
+      <div className="container">
+        {celula.map((linha, i) => {
+          const temp = linha.map((coluna, j) => {
+            return (
+              <Celula
+                key={`${i}-${j}`}
+                coords={[i, j]}
+                jogador={jogador}
+                objetivo={obj}
+                obst={obst}
+                reiniciarJogo={reiniciarJogo}
+                LamaCapim={LamaCapim}
+              />
+            );
+          });
+          return <div key={i} className="mostralinha">{temp}</div>;
+        })}
+      </div>
     </div>
   );
 }

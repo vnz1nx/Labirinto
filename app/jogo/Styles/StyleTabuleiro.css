@@ -9,17 +9,20 @@ body {
   --base-cell-size: 20px;
 }
 
+.board-scroll-container {
+  max-width: calc(100vw - 64px);
+  max-height: calc(100vh - 64px);
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
 .container {
-  --board-horizontal-limit: max(0px, calc(100vw - 32px));
-  --board-vertical-limit: max(0px, calc(100vh - 120px));
-  --cell-size: min(
-    var(--base-cell-size),
-    calc(var(--board-horizontal-limit) / var(--board-columns)),
-    calc(var(--board-vertical-limit) / var(--board-columns))
-  );
+  --cell-size: var(--base-cell-size);
   width: calc(var(--cell-size) * var(--board-columns));
   height: calc(var(--cell-size) * var(--board-columns));
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
 }
