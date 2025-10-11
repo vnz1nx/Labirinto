@@ -1,6 +1,10 @@
 .game {
   position: relative;
-  min-height: 100vh;
+  /* usa a altura da viewport real no mobile, mantém 100vh nos demais */
+  min-height: 100dvh;
+  /* ESSENCIAL: o fundo do jogo ocupar toda a largura da tela */
+  width: 100%;
+
   padding: 32px;
   display: flex;
   align-items: center;
@@ -8,6 +12,7 @@
   background: radial-gradient(circle at top, #1c2531 0%, #0b1119 55%, #05070b 100%);
   overflow: hidden;
 }
+
 
 .game::before,
 .game::after {

@@ -4,54 +4,63 @@
   width: var(--cell-size);
 }
 
-.Celula > * {
+ .Celula > * {
   position: absolute;
   z-index: 1;
-}
+  position: absolute;
+  left: 0;
+  bottom: 0;   /* <-- ancora na base */
+  z-index: 1;
+ }
+ .Celula > .caminho {
+   z-index: 0;
+ }
+
 .Celula > .caminho {
   z-index: 0;
 }
 .arvore {
   background-image: url(Imagens/arvorenatal.png);
   background-size: cover;
-  width: var(--cell-size);
-  height: calc(var(--cell-size) * 1.3);
+  width: calc(var(--cell-size) * 1.5);
+  height: calc(var(--cell-size) * 1.5);
 }
 .arvore2 {
   background-image: url(Imagens/arvorenormal.png);
   background-size: cover;
-  width: calc(var(--cell-size) * 0.8);
-  height: calc(var(--cell-size) * 1.5);
+  width: calc(var(--cell-size) * 0.85);
+  height: calc(var(--cell-size) * 1.6);
 }
 .capim {
   background-image: url(Imagens/capim.png);
   background-size: cover;
-  z-index: 2;
-  width: calc(var(--cell-size) * 1.25);
-  height: calc(var(--cell-size) * 1.5);
+  z-index: -2;
+  width: calc(var(--cell-size) * 1.5);
+  height: calc(var(--cell-size) * 1);
 }
 .pedra {
   border-radius: 20%;
   background-image: url(Imagens/pedra.png);
   background-size: cover;
-  width: calc(var(--cell-size) * 1.25);
+  width: calc(var(--cell-size) * 1.0);
   height: calc(var(--cell-size) * 1.25);
 }
 .lama {
   border-radius: 25%;
+  left: 5px;
   background-image: url(Imagens/lama.png);
   background-size: cover;
   z-index: 0;
-  width: calc(var(--cell-size) * 0.75);
-  height: calc(var(--cell-size) * 0.75);
+  width: calc(var(--cell-size) * 0.7);
+  height: calc(var(--cell-size) * 0.7);
 }
 .rio {
   border-radius: 0% 0% 10% 0%;
   background-image: url(Imagens/agua.png);
   background-size: cover;
   z-index: 1;
-  width: var(--cell-size);
-  height: var(--cell-size);
+  width: calc(var(--cell-size) * 1.2);
+  height: calc(var(--cell-size) * 1.0);
 }
 .castelo1 {
   background-image: url(Imagens/castelo1.png);

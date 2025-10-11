@@ -53,8 +53,10 @@
 
 .tela-principal.jogo-iniciado {
   padding: 0;
-  background: none;
+  /* mantém um fundo escuro para nunca aparecer branco por baixo */
+  background: #0b1119; /* ou copie o mesmo radial-gradient da .game */
 }
+
 
 .tela-principal.jogo-iniciado::before,
 .tela-principal.jogo-iniciado::after {
@@ -148,6 +150,8 @@
   pointer-events: none;
   animation: sparkle 9s linear infinite;
 }
+
+
 
 .hero-spark--one {
   top: -22%;

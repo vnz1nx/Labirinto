@@ -6,20 +6,34 @@ body {
 
 :root {
   --board-columns: 50;
-  --base-cell-size: 20px;
-  --base-cell-size: clamp(30px, 5vmin, 60px);
+  /* escolha UMA das linhas abaixo: */
+
+  /* fixo (zoom forte) */
+  --base-cell-size: 40px;
+
+  /* OU dinâmico (ajusta à tela, com limites) */
+  /* --base-cell-size: clamp(60px, 7vmin, 100px); */
+}
+/* viewport que “enquadra” parte do tabuleiro */
+.board-viewport {
+  /* ajuste o “campo de visão” (quantas células cabem na tela) */
+  width: min(100vw - 20px, calc(var(--cell-size) * 30)); /* ~18 colunas visíveis */
+  height: min(100vh - 40px, calc(var(--cell-size) * 20)); /* ~12 linhas visíveis */
+  overflow: hidden;
+  margin: 0 auto;
+  position: relative;
 }
 
+/* permita mover o tabuleiro inteiro com transform */
 .container {
-  --board-horizontal-limit: max(0px, calc(100vw - 32px));
-  --board-vertical-limit: max(0px, calc(100vh - 120px));
-  --board-horizontal-limit: max(0px, calc(100vw - 20px));
-  --board-vertical-limit: max(0px, calc(100vh - 40px));
-  --cell-size: min(
-    var(--base-cell-size),
-    calc(var(--board-horizontal-limit) / var(--board-columns)),
-    calc(var(--board-vertical-limit) / var(--board-columns))
-  );
+  will-change: transform;
+}
+
+
+ .container {
+  /* tira os limites, célula passa a obedecer só o --base-cell-size */
+  --cell-size: var(--base-cell-size);
+
   width: calc(var(--cell-size) * var(--board-columns));
   height: calc(var(--cell-size) * var(--board-columns));
   margin: 0 auto;
@@ -27,9 +41,11 @@ body {
   flex-direction: column;
 }
 
+
 .mostralinha {
   display: flex;
   flex-direction: row;
   background-image: url(Imagens/grass.png);
   background-size: var(--cell-size) var(--cell-size);
+  image-rendering: pixelated; /* mantém pixel art nítida ao escalar */
 }

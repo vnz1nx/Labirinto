@@ -145,13 +145,13 @@ export default function Celula({coords,jogador,objetivo,obst,reiniciarJogo,LamaC
     bloco = <div className="placa" key="placa"></div>;
   }
 
-  return (
-    <div className="Celula">
-      {bloco}
-      {ponte}
-      {casaCastelo}
-      {personagem}
-      {obj}
+return (
+  <div className="Celula" style={{ zIndex: coords[0] }}>
+       {bloco}
+       {ponte}
+       {casaCastelo}
+       {personagem}
+       {obj}
     </div>
-  );
+);
 }

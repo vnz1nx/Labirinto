@@ -1,17 +1,20 @@
+
 .Personagem {
   background-image: url(Imagens/perso.gif);
   background-size: cover;
   z-index: 1;
-  width: 20px;
-  height: 20px;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  image-rendering: pixelated;
 }
+
 
 .objetivo {
   background-image: url(Imagens/objetivo.png);
   background-size: cover;
   z-index: 1;
-  width: 20px;
-  height: 30px;
+  width: 40px;
+  height: 60px;
   filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
   animation: bounce 1s infinite;
 }
