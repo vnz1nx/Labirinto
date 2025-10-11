@@ -2,16 +2,18 @@ html,
 body {
   padding: 0;
   margin: 0;
+  background-color: #0d0d0f;
+  color: #f5f5f5;
 }
 
 :root {
   --board-columns: 50;
-  --base-cell-size: 20px;
+  --base-cell-size: clamp(45px, 9vmin, 110px);
 }
 
 .container {
-  --board-horizontal-limit: max(0px, calc(100vw - 32px));
-  --board-vertical-limit: max(0px, calc(100vh - 120px));
+  --board-horizontal-limit: max(0px, calc(100vw - 12px));
+  --board-vertical-limit: max(0px, calc(100vh - 40px));
   --cell-size: min(
     var(--base-cell-size),
     calc(var(--board-horizontal-limit) / var(--board-columns)),
