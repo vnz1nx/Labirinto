@@ -122,6 +122,8 @@ export default function RepGame() {
         return;
       }
 
+      event.preventDefault();
+
       const [rowDelta, colDelta] = directions[event.key];
       const nextRow = player[0] + rowDelta;
       const nextCol = player[1] + colDelta;
@@ -197,7 +199,6 @@ export default function RepGame() {
           jogador={player}
           obj={objectivePosition}
           obst={obstacles}
-          reiniciarJogo={reiniciarJogo}
           LamaCapim={lamaCapim}
         />
       )}

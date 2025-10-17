@@ -1,13 +1,13 @@
 "use client";
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import Celula from "./celula";
+import { positionKey } from "./gameLogic.mjs";
 import "./Styles/StyleTabuleiro.css";
 
 export default function Tabuleiro({
   jogador,
   obj,
   obst,
-  reiniciarJogo,
   LamaCapim,
 }) {
   const [celula, setCelula] = useState(
@@ -26,6 +26,22 @@ export default function Tabuleiro({
   const [boardTransform, setBoardTransform] = useState({
     transform: "translate3d(0,0,0)",
   });
+
+  const obstacleMap = useMemo(() => {
+    const map = new Map();
+    (obst ?? []).forEach(([row, col, type]) => {
+      map.set(positionKey(row, col), type);
+    });
+    return map;
+  }, [obst]);
+
+  const lamaCapimMap = useMemo(() => {
+    const map = new Map();
+    (LamaCapim ?? []).forEach(([row, col, type]) => {
+      map.set(positionKey(row, col), type);
+    });
+    return map;
+  }, [LamaCapim]);
 
   const updateCamera = useCallback(() => {
     const board = boardRef.current;
@@ -100,9 +116,8 @@ export default function Tabuleiro({
               coords={[i, j]}
               jogador={jogador}
               objetivo={obj}
-              obst={obst}
-              reiniciarJogo={reiniciarJogo}
-              LamaCapim={LamaCapim}
+              obstaculos={obstacleMap}
+              lamaCapim={lamaCapimMap}
             />
           ));
           return (
